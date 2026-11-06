@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Контролёры DE</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font:13px/1.4 "Lucida Grande","Helvetica Neue",Helvetica,Arial,sans-serif;color:#1c1c1c}
+body{background:
+radial-gradient(ellipse 55% 22% at 72% 88%,#9fd0ffcc,transparent 70%),
+radial-gradient(ellipse 70% 30% at 15% 105%,#b36bf0aa,transparent 70%),
+radial-gradient(ellipse 40% 55% at 92% 18%,#5a46d8aa,transparent 70%),
+radial-gradient(ellipse 45% 40% at 5% 25%,#3b2aa8aa,transparent 70%),
+linear-gradient(#07041f,#150c52 50%,#28288c);background-attachment:fixed;padding-bottom:50px;overflow-x:hidden}
+body::before{content:"";position:fixed;left:-20%;right:-20%;bottom:-8%;height:46%;border-radius:50%;border-top:3px solid #dff0ffcc;box-shadow:0 -6px 30px 6px #8cc4ff99,0 -30px 90px 20px #a57bff66;transform:rotate(-6deg);filter:blur(1.5px);pointer-events:none;z-index:-1}
+.menubar{position:sticky;top:0;z-index:5;height:22px;display:flex;gap:18px;align-items:center;padding:0 14px;background:linear-gradient(#fafafa,#d9d9d9 50%,#c9c9c9 51%,#d4d4d4);border-bottom:1px solid #6d6d6d;font-size:12.5px;box-shadow:0 1px 5px #0007}
+.menubar .r{margin-left:auto}
+.win{max-width:860px;margin:26px auto 14px;border-radius:9px 9px 5px 5px;overflow:hidden;background:#e6e6e6;border:1px solid #2a2a2a;box-shadow:0 22px 60px #000b,0 0 0 1px #fff4 inset}
+.title{height:28px;display:flex;align-items:center;padding:0 10px;background:linear-gradient(#f2f2f2,#d2d2d2 50%,#bdbdbd 51%,#cfcfcf);border-bottom:1px solid #5e5e5e;position:relative}
+.title span{position:absolute;left:0;right:0;text-align:center;font-weight:bold;text-shadow:0 1px #fffc;pointer-events:none}
+.dot{width:14px;height:14px;border-radius:50%;margin-right:7px;border:1px solid #0006;position:relative;box-shadow:inset 0 -2px 3px #0003}
+.dot::after{content:"";position:absolute;left:2px;right:2px;top:1px;height:5px;border-radius:50%;background:linear-gradient(#fffe,#fff3)}
+.d1{background:radial-gradient(circle at 50% 80%,#ff8a7a,#d92c1c)}.d2{background:radial-gradient(circle at 50% 80%,#ffe27a,#d99a05)}.d3{background:radial-gradient(circle at 50% 80%,#9ef07a,#23a01c)}
+.main{display:flex;min-height:430px}
+.side{flex:0 0 170px;background:linear-gradient(90deg,#dde4ee,#d0d9e6);border-right:1px solid #8c97a8;padding:8px 0}
+.side h4{margin:6px 12px 3px;font-size:10px;color:#6a7384;text-transform:uppercase}
+.side button{display:block;width:100%;text-align:left;border:0;background:none;padding:4px 14px;font:13px inherit;cursor:pointer;color:#111}
+.side button.on{color:#fff;text-shadow:0 -1px #0007;background:linear-gradient(#7aa6dc,#3f73bd 50%,#2d62b0 51%,#4a82cc);box-shadow:inset 0 1px #fff6}
+.pane{flex:1;min-width:0;padding:16px;background:repeating-linear-gradient(#f1f1f1 0 2px,#ececec 2px 4px)}
+h3{margin:0 0 10px;font-size:14px;text-shadow:0 1px #fff}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.btn{position:relative;font:bold 13px "Lucida Grande",Arial,sans-serif;color:#fff;text-shadow:0 -1px 1px #0008;padding:0 16px;height:30px;border-radius:15px;border:1px solid var(--d);cursor:pointer;
+background:linear-gradient(var(--a),var(--b) 50%,var(--c) 51%,var(--e));
+box-shadow:0 3px 6px #0006,0 1px 1px #0004,inset 0 -4px 8px var(--g),inset 0 0 0 1px #fff3}
+.btn::before{content:"";position:absolute;left:5%;right:5%;top:2px;height:46%;border-radius:14px 14px 40% 40%;background:linear-gradient(#fffffff2,#ffffff40);pointer-events:none}
+.btn span{position:relative;z-index:1}
+.btn:hover{filter:brightness(1.1) saturate(1.1)}.btn:active{filter:brightness(.82);box-shadow:0 1px 2px #0006,inset 0 3px 8px #0008}
+.bl{--a:#9cc8ff;--b:#4a90ee;--c:#1b5fd6;--e:#5eb0ff;--d:#123e91;--g:#9fe0ff}
+.gr{--a:#b7f0a0;--b:#5fc443;--c:#2f9a1c;--e:#7fe058;--d:#1d6a10;--g:#c9ffa8}
+.rd{--a:#ffb4a8;--b:#f0563f;--c:#c92a14;--e:#ff7b62;--d:#8a1708;--g:#ffc0a8}
+.or{--a:#ffdc9c;--b:#fba728;--c:#e08000;--e:#ffc255;--d:#965200;--g:#fff0a8}
+.gy{--a:#f7f7f7;--b:#d6d6d6;--c:#b4b4b4;--e:#e4e4e4;--d:#6f6f6f;--g:#fff;color:#222;text-shadow:0 1px #fff9;height:24px;font-size:12px}
+.chip{height:36px;min-width:64px;font-size:15px;padding:0 18px}
+.route{margin:6px 0 0 6px}
+.st{display:flex;align-items:center;gap:12px;position:relative;min-height:38px;cursor:pointer;border-radius:6px;padding-right:6px}
+.st:hover{background:#fff8}
+.st::before{content:"";position:absolute;left:10px;top:0;bottom:0;width:7px;margin-left:-3px;background:var(--c)}
+.st:first-child::before{top:50%}.st:last-child::before{bottom:50%}
+.pt{flex:none;width:22px;height:22px;border-radius:50%;border:3px solid var(--c);background:radial-gradient(circle at 50% 30%,#fff,#e8e8e8 60%,#bbb);box-shadow:0 2px 4px #0006,inset 0 -2px 3px #0003;position:relative;z-index:1}
+.st:hover .pt{border-width:4px}
+.tag{margin-left:auto;padding:2px 9px;border-radius:10px;color:#fff;font-size:11px;font-weight:bold;text-shadow:0 -1px #0006;background:#888;white-space:nowrap}
+.t0{background:#d9473a}.t1{background:#41a82a}.t2{background:#e08e1b}.t3{background:#3a7bd5}
+.box{max-width:860px;margin:0 auto 16px;padding:12px;border-radius:8px;border:1px solid #333;background:linear-gradient(#fff,#efefef);box-shadow:0 12px 30px #0009}
+#feed{list-style:none;margin:0;padding:0;max-height:340px;overflow:auto}
+#feed li{display:flex;gap:8px;align-items:center;padding:7px 8px;border-bottom:1px solid #ddd}
+#feed li:nth-child(even){background:#eaf1fb}
+.meta{margin-left:auto;text-align:right;font-size:11px;color:#666;white-space:nowrap}
+.hint{font-size:11px;color:#555}
+input{display:block;width:100%;margin-top:3px;padding:6px;font:13px inherit;border:1px solid #888;border-radius:4px;background:#fff;box-shadow:inset 0 1px 3px #0003}
+label{font-weight:bold;font-size:11px;display:block;margin-bottom:8px}
+.ov{position:fixed;inset:0;background:#0007;display:none;align-items:flex-start;justify-content:center;z-index:20}
+.ov.on{display:flex}
+.sheet{margin-top:26px;width:min(440px,94vw);padding:18px;border-radius:0 0 10px 10px;background:linear-gradient(#f4f4f4,#dcdcdc);border:1px solid #333;border-top:0;box-shadow:0 14px 40px #000b;animation:dn .25s ease-out}
+@keyframes dn{from{transform:translateY(-100%)}}
+.sheet .btn{display:block;width:100%;height:38px;margin-bottom:10px;font-size:14px;border-radius:19px}
+.sheet .btn::before{border-radius:18px 18px 40% 40%}
+@media(max-width:620px){.main{flex-direction:column}.side{flex:none;border-right:0;border-bottom:1px solid #8c97a8;display:flex;overflow-x:auto;padding:4px}.side h4{display:none}.side button{width:auto;white-space:nowrap}}
+.tabs{display:flex;gap:10px;justify-content:center;padding:8px;background:linear-gradient(#dcdcdc,#c4c4c4);border-bottom:1px solid #777}
+.tabs .btn{height:32px;min-width:130px}
+.lang{margin-left:auto;display:flex;gap:4px;align-items:center}
+.lang .btn{height:17px;padding:0 8px;font-size:10px;border-radius:9px}
+.lang .btn::before{top:1px;height:40%}
+.lrow{display:flex;align-items:center;gap:10px;padding:8px 10px;margin-bottom:8px;border-radius:8px;border:1px solid #b5b5b5;background:linear-gradient(#fff,#e9e9e9);cursor:pointer;box-shadow:0 1px 3px #0003}
+.lrow:hover{background:linear-gradient(#fff,#d6e6fb)}
+.lrow .btn{height:26px;min-width:58px;flex:none;cursor:pointer}
+.sub{font-size:11px;color:#666;display:block}
+</style></head><body>
+<div class="menubar"><b>&#63743;</b><b id="app"></b><span id="mf"></span><div class="lang" id="lang"></div><b id="uid"></b><span id="clock"></span></div>
+<div class="win">
+ <div class="title"><i class="dot d1"></i><i class="dot d2"></i><i class="dot d3"></i><span id="wt"></span></div>
+ <div class="tabs" id="tabs"></div>
+ <div class="main"><div class="side" id="side"></div><div class="pane" id="pane"></div></div>
+</div>
+<div class="box"><h3><span id="ft"></span> <span class="hint" id="cnt"></span></h3><p class="hint" id="me"></p><ul id="feed"></ul><p class="hint" id="note"></p></div>
+<div class="ov" id="ov"><div class="sheet"><h3 id="sh"></h3>
+ <button class="btn rd" data-o="0"><span></span></button>
+ <button class="btn gr" data-o="1"><span></span></button>
+ <button class="btn or" data-o="2"><span></span></button>
+ <button class="btn bl" data-o="3"><span></span></button>
+ <button class="btn gy" id="cx"><span></span></button></div></div>
+<script>
+const P=a=>Object.fromEntries(a.split(";").map(s=>{const i=s.indexOf(":");return[s.slice(0,i),s.slice(i+1)]}));
+const S={
+"Berlin":P("S1:Oranienburg,Frohnau,Gesundbrunnen,Friedrichstraße,Potsdamer Platz,Yorckstraße,Rathaus Steglitz,Zehlendorf,Wannsee;S2:Bernau,Gesundbrunnen,Nordbahnhof,Potsdamer Platz,Südkreuz,Lichterfelde Süd,Blankenfelde;S3:Spandau,Zoologischer Garten,Hauptbahnhof,Alexanderplatz,Ostkreuz,Köpenick,Erkner;S5:Westkreuz,Zoologischer Garten,Hauptbahnhof,Alexanderplatz,Ostkreuz,Marzahn,Strausberg Nord;S7:Potsdam Hbf,Wannsee,Westkreuz,Zoologischer Garten,Hauptbahnhof,Alexanderplatz,Ostbahnhof,Ahrensfelde;S9:Spandau,Westkreuz,Ostkreuz,Treptower Park,Flughafen BER;S41/S42 Ring:Gesundbrunnen,Schönhauser Allee,Ostkreuz,Neukölln,Südkreuz,Schöneberg,Westkreuz,Westend,Beusselstraße;S25:Hennigsdorf,Gesundbrunnen,Friedrichstraße,Südkreuz,Teltow Stadt;S46:Königs Wusterhausen,Schöneweide,Neukölln,Südkreuz,Westend"),
+"München":P("S1:Freising,Neufahrn,Moosach,Hauptbahnhof,Marienplatz,Ostbahnhof,Leuchtenbergring;S2:Petershausen,Karlsfeld,Hauptbahnhof,Marienplatz,Ostbahnhof,Riem,Erding;S3:Mammendorf,Pasing,Hauptbahnhof,Marienplatz,Ostbahnhof,Giesing,Holzkirchen;S4:Geltendorf,Pasing,Hauptbahnhof,Marienplatz,Ostbahnhof,Trudering,Ebersberg;S8:Herrsching,Pasing,Hauptbahnhof,Marienplatz,Ostbahnhof,Flughafen"),
+"Hamburg":P("S1:Poppenbüttel,Ohlsdorf,Hauptbahnhof,Jungfernstieg,Landungsbrücken,Altona,Blankenese,Wedel;S3:Pinneberg,Altona,Landungsbrücken,Hauptbahnhof,Harburg,Stade;S2:Altona,Hauptbahnhof,Berliner Tor,Bergedorf"),
+"Frankfurt":P("S1:Wiesbaden Hbf,Höchst,Hauptbahnhof,Hauptwache,Konstablerwache,Offenbach Ostbahnhof,Rödermark-Ober Roden;S8:Wiesbaden Hbf,Mainz Hbf,Flughafen,Hauptbahnhof,Konstablerwache,Offenbach Marktplatz,Hanau Hbf;S2:Niedernhausen,Höchst,Hauptbahnhof,Dietzenbach;S3:Bad Soden,Frankfurt West,Hauptbahnhof,Darmstadt Hbf;S4:Kronberg,Frankfurt West,Hauptbahnhof,Langen;S5:Friedrichsdorf,Frankfurt West,Hauptbahnhof;S6:Friedberg,Frankfurt West,Hauptbahnhof;S7:Riedstadt-Goddelau,Groß Gerau,Hauptbahnhof;S9:Wiesbaden Hbf,Hauptbahnhof,Konstablerwache,Hanau Hbf"),
+"Rhein-Ruhr":P("S1:Solingen Hbf,Düsseldorf Hbf,Duisburg Hbf,Essen Hbf,Bochum Hbf,Dortmund Hbf;S6:Essen Hbf,Düsseldorf Hbf,Leverkusen Mitte,Köln Hbf,Köln Messe/Deutz;S11:Bergisch Gladbach,Köln Messe/Deutz,Köln Hbf,Düsseldorf Hbf,Düsseldorf Flughafen;S3:Oberhausen Hbf,Essen Hbf,Hattingen Mitte;S5:Dortmund Hbf,Witten Hbf,Hagen Hbf;S8:Hagen Hbf,Wuppertal Hbf,Düsseldorf Hbf,Mönchengladbach Hbf"),
+"Stuttgart":P("S1:Herrenberg,Böblingen,Vaihingen,Hauptbahnhof,Bad Cannstatt,Esslingen,Plochingen,Kirchheim;S2:Schorndorf,Waiblingen,Bad Cannstatt,Hauptbahnhof,Rohr,Flughafen/Messe,Filderstadt;S3:Backnang,Waiblingen,Hauptbahnhof,Flughafen/Messe;S5:Bietigheim-Bissingen,Ludwigsburg,Hauptbahnhof,Schwabstraße;S6:Weil der Stadt,Leonberg,Hauptbahnhof,Schwabstraße"),
+"Nürnberg":P("S1:Hartmannshof,Lauf (links),Nürnberg Hbf,Fürth Hbf,Erlangen,Forchheim,Bamberg;S2:Altdorf,Feucht,Nürnberg Hbf,Roth;S3:Nürnberg Hbf,Neumarkt (Oberpf);S4:Nürnberg Hbf,Fürth Hbf,Ansbach"),
+"Köln":P("S12:Düren,Horrem,Köln Hbf,Siegburg/Bonn,Au (Sieg);S13:Düren,Horrem,Köln Hbf,Troisdorf,Bonn-Oberkassel"),
+"Dresden":P("S1:Meißen,Radebeul,Dresden Neustadt,Dresden Hbf,Heidenau,Pirna,Bad Schandau,Schöna;S2:Dresden Flughafen,Dresden Neustadt,Dresden Hbf,Heidenau,Pirna"),
+"Leipzig":P("S5:Halle (Saale) Hbf,Flughafen Leipzig/Halle,Leipzig Hbf,Altenburg,Zwickau Hbf"),
+"Bremen":P("RS1:Bremen-Farge,Bremen-Vegesack,Bremen Hbf,Verden (Aller);RS2:Bremerhaven Hbf,Bremen Hbf"),
+"Rhein-Neckar":P("S1:Homburg (Saar),Kaiserslautern Hbf,Ludwigshafen Hbf,Mannheim Hbf,Heidelberg Hbf,Mosbach,Osterburken;S2:Kaiserslautern Hbf,Ludwigshafen Hbf,Mannheim Hbf,Heidelberg Hbf,Mosbach-Neckarelz"),
+"Karlsruhe":P("S1:Hochstetten,Karlsruhe Hbf,Ettlingen,Bad Herrenalb")};
+const R={
+"NRW":P("RE1:Aachen Hbf,Köln Hbf,Düsseldorf Hbf,Duisburg Hbf,Essen Hbf,Dortmund Hbf,Hamm (Westf) Hbf;RE2:Düsseldorf Hbf,Duisburg Hbf,Essen Hbf,Münster (Westf) Hbf,Osnabrück Hbf;RE4:Dortmund Hbf,Wuppertal Hbf,Düsseldorf Hbf,Mönchengladbach Hbf,Aachen Hbf;RE5:Wesel,Duisburg Hbf,Düsseldorf Hbf,Köln Hbf,Bonn Hbf,Koblenz Hbf;RE8:Mönchengladbach Hbf,Köln Hbf,Bonn Hbf,Koblenz Hbf;RE9:Aachen Hbf,Düren,Köln Hbf,Siegburg/Bonn,Siegen Hbf;RE11:Düsseldorf Hbf,Duisburg Hbf,Essen Hbf,Dortmund Hbf,Hamm (Westf) Hbf,Paderborn Hbf,Kassel-Wilhelmshöhe;RE10:Kleve,Goch,Geldern,Krefeld Hbf,Düsseldorf Hbf;RE13:Venlo,Mönchengladbach Hbf,Düsseldorf Hbf,Wuppertal Hbf,Hagen Hbf,Hamm (Westf) Hbf;RE19:Düsseldorf Hbf,Duisburg Hbf,Oberhausen Hbf,Wesel,Emmerich,Arnhem Centraal"),
+"BB":P("RE1:Magdeburg Hbf,Brandenburg Hbf,Potsdam Hbf,Berlin Hbf,Berlin Ostbahnhof,Erkner,Fürstenwalde,Frankfurt (Oder);RE2:Cottbus Hbf,Lübben,Berlin Ostbahnhof,Berlin Hbf,Berlin-Spandau,Nauen,Wittenberge,Schwerin Hbf,Wismar;RE7:Dessau Hbf,Berlin Hbf,Berlin Ostbahnhof,Königs Wusterhausen,Wünsdorf-Waldstadt;RE4:Rathenow,Nauen,Berlin-Spandau,Berlin Hbf,Berlin Südkreuz,Ludwigsfelde;RE6:Wittenberge,Neuruppin West,Hennigsdorf,Berlin-Gesundbrunnen"),
+"Nord":P("RE1:Hamburg Hbf,Büchen,Hagenow Land,Schwerin Hbf,Bad Kleinen,Rostock Hbf;RE8:Hamburg Hbf,Bad Oldesloe,Lübeck Hbf;RE6:Westerland (Sylt),Niebüll,Husum,Itzehoe,Elmshorn,Hamburg-Altona"),
+"Bayern":P("RE1:Nürnberg Hbf,Ingolstadt Hbf,München Hbf"),
+"Hessen":P("RE30:Frankfurt (Main) Hbf,Friedberg (Hessen),Gießen Hbf,Marburg (Lahn),Kassel Hbf;RE98:Frankfurt (Main) Hbf,Hanau Hbf,Gelnhausen,Fulda"),
+"Sachsen":P("RE3:Dresden Hbf,Freiberg (Sachsen),Chemnitz Hbf,Zwickau Hbf,Plauen (Vogtl) ob Bf,Hof Hbf;RE50:Dresden Hbf,Riesa,Leipzig Hbf;RE6:Leipzig Hbf,Geithain,Chemnitz Hbf"),
+"BW":P("RE1:Karlsruhe Hbf,Pforzheim Hbf,Mühlacker,Vaihingen (Enz),Stuttgart Hbf,Schwäbisch Gmünd,Aalen Hbf"),
+"Niedersachsen":P("RE1:Norddeich Mole,Emden Hbf,Leer (Ostfriesland),Oldenburg Hbf,Bremen Hbf,Nienburg (Weser),Hannover Hbf")};
+const NM={"Berlin":["Берлин","Berlin","Berlin"],"München":["Мюнхен","Munich","München"],"Hamburg":["Гамбург","Hamburg","Hamburg"],"Frankfurt":["Франкфурт","Frankfurt","Frankfurt"],"Rhein-Ruhr":["Рейн-Рур","Rhine-Ruhr","Rhein-Ruhr"],"Stuttgart":["Штутгарт","Stuttgart","Stuttgart"],"Nürnberg":["Нюрнберг","Nuremberg","Nürnberg"],
+"NRW":["Северный Рейн-Вестфалия","North Rhine-Westphalia","Nordrhein-Westfalen"],"BB":["Берлин-Бранденбург","Berlin-Brandenburg","Berlin-Brandenburg"],"Nord":["Север (Гамбург, Мекленбург)","North (Hamburg, Mecklenburg)","Norden (Hamburg, Mecklenburg)"],"Bayern":["Бавария","Bavaria","Bayern"],"Hessen":["Гессен","Hesse","Hessen"],"Sachsen":["Саксония","Saxony","Sachsen"],"BW":["Баден-Вюртемберг","Baden-Württemberg","Baden-Württemberg"],"Niedersachsen":["Нижняя Саксония","Lower Saxony","Niedersachsen"],"Köln":["Кёльн","Cologne","Köln"],"Dresden":["Дрезден","Dresden","Dresden"],"Leipzig":["Лейпциг / Галле","Leipzig / Halle","Leipzig / Halle"],"Bremen":["Бремен","Bremen","Bremen"],"Rhein-Neckar":["Рейн-Неккар","Rhine-Neckar","Rhein-Neckar"],"Karlsruhe":["Карлсруэ","Karlsruhe","Karlsruhe"]};
+const hm=m=>[Math.floor(m/60),m%60];
+const T={
+ru:{app:"Контролёры",mf:"Файл",wt:"Где контролёр?",s:"S-Bahn",r:"Региональные",all:"Все поезда",cities:"Города",regions:"Регионы",other:"Другое",pickS:"Выберите линию — ",pickR:"Региональные поезда: откуда → куда",note:"Показаны основные линии и ключевые станции. Чего нет в списке — вкладка «Другое».",back:"‹ Назад",tap:"нажмите на станцию",o:["Контролёр есть","Контролёра нет","Был, когда я зашёл","Был, когда я вышел"],cancel:"Отмена",feed:"Сообщения всех пользователей",nick:"Ваш номер присвоен при входе на сайт, под ним появляются все ваши записи. Записи удаляются через 3 часа.",saved:n=>"Ваш ник: "+n+" — запись сохранена.",empty:"Пока пусто. Будьте первым!",ln:"Линия / поезд (откуда → куда)",ex:"например RE 1 Hamm → Aachen",st:"Станция",stp:"название станции",next:"Далее",nodb:"Общая база недоступна (нужен вход в Claude): записи видны только вам.",dberr:"Ошибка загрузки общей базы.",err:"Не удалось сохранить: ",
+ago:m=>{const[h,r]=hm(m);return m<1?"только что":m<60?m+" мин назад":h+" ч "+r+" мин назад"},left:m=>{const[h,r]=hm(m);return"ещё "+h+" ч "+r+" мин"},loc:"ru-RU"},
+en:{app:"Inspectors",mf:"File",wt:"Where is the inspector?",s:"S-Bahn",r:"Regional",all:"All trains",cities:"Cities",regions:"Regions",other:"Other",pickS:"Choose a line — ",pickR:"Regional trains: from → to",note:"Main lines and key stations are shown. Anything missing: use the “Other” tab.",back:"‹ Back",tap:"tap a station",o:["Inspector present","No inspector","Was there when I got on","Was there when I got off"],cancel:"Cancel",feed:"Reports from everyone",nick:"Your ID was assigned when you opened the site; all your reports appear under it. Reports are deleted after 3 hours.",saved:n=>"Your nickname: "+n+" — report saved.",empty:"Nothing yet. Be the first!",ln:"Line / train (from → to)",ex:"e.g. RE 1 Hamm → Aachen",st:"Station",stp:"station name",next:"Next",nodb:"Shared database unavailable (Claude sign-in needed): reports are visible only to you.",dberr:"Could not load the shared database.",err:"Could not save: ",
+ago:m=>{const[h,r]=hm(m);return m<1?"just now":m<60?m+" min ago":h+" h "+r+" min ago"},left:m=>{const[h,r]=hm(m);return h+" h "+r+" min left"},loc:"en-GB"},
+de:{app:"Kontrolleure",mf:"Ablage",wt:"Wo ist der Kontrolleur?",s:"S-Bahn",r:"Regional",all:"Alle Züge",cities:"Städte",regions:"Regionen",other:"Andere",pickS:"Linie wählen — ",pickR:"Regionalzüge: von → nach",note:"Gezeigt werden Hauptlinien und wichtige Stationen. Fehlt etwas: Reiter „Andere“.",back:"‹ Zurück",tap:"Station antippen",o:["Kontrolleur da","Kein Kontrolleur","War da, als ich einstieg","War da, als ich ausstieg"],cancel:"Abbrechen",feed:"Meldungen aller Nutzer",nick:"Deine Nummer wurde beim Öffnen der Seite vergeben; alle deine Meldungen erscheinen darunter. Meldungen werden nach 3 Stunden gelöscht.",saved:n=>"Dein Nickname: "+n+" — Meldung gespeichert.",empty:"Noch nichts. Sei der Erste!",ln:"Linie / Zug (von → nach)",ex:"z. B. RE 1 Hamm → Aachen",st:"Station",stp:"Name der Station",next:"Weiter",nodb:"Gemeinsame Datenbank nicht verfügbar (Claude-Login nötig): Meldungen sind nur für dich sichtbar.",dberr:"Datenbank konnte nicht geladen werden.",err:"Speichern fehlgeschlagen: ",
+ago:m=>{const[h,r]=hm(m);return m<1?"gerade eben":m<60?"vor "+m+" Min.":"vor "+h+" Std. "+r+" Min."},left:m=>{const[h,r]=hm(m);return"noch "+h+" Std. "+r+" Min."},loc:"de-DE"}};
+const TTL=3*3600e3,LI={ru:0,en:1,de:2},IDL={ru:"Ваш номер",en:"Your ID",de:"Deine Nummer"};
+let UID=null;try{UID=localStorage.getItem("uid")}catch(e){}
+if(!UID){UID="User"+Math.floor(10000+Math.random()*90000);try{localStorage.setItem("uid",UID)}catch(e){}}
+const $=i=>document.getElementById(i),E=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const COL=l=>/^S/.test(l)?"#12904f":"#d4231f",CLS=l=>/^S/.test(l)?"gr":"rd";
+let lang="ru";try{const s=localStorage.getItem("lg");if(T[s])lang=s;else{const n=(navigator.language||"").slice(0,2);if(T[n])lang=n}}catch(e){}
+let tab="S",area="Berlin",cur=null,pick=null,items=[],col=null;let API=false;
+const t=()=>T[lang],nm=id=>(NM[id]||[])[LI[lang]]||id,data=()=>tab==="S"?S:R;
+function btn(txt,c,f){const b=E("button","btn "+c);b.append(E("span",0,txt));if(f)b.onclick=f;return b}
+function chrome(){const x=t();$("app").textContent=x.app;$("mf").textContent=x.mf;$("wt").textContent=x.wt;$("uid").textContent=IDL[lang]+": "+UID;
+ const l=$("lang");l.innerHTML="";for(const k of["ru","en","de"])l.append(btn(k.toUpperCase(),k===lang?"bl":"gy",()=>{lang=k;try{localStorage.setItem("lg",k)}catch(e){}all()}));
+ const tb=$("tabs");tb.innerHTML="";
+ tb.append(btn(x.s,tab==="S"?"gr":"gy",()=>{tab="S";area="Berlin";cur=null;all()}),btn(x.r,tab==="R"?"rd":"gy",()=>{tab="R";area="ALL";cur=null;all()}));
+ document.querySelectorAll("[data-o]").forEach(b=>b.firstChild.textContent=x.o[+b.dataset.o]);$("cx").firstChild.textContent=x.cancel;
+ $("ft").textContent=x.feed;if(!$("me").dataset.s)$("me").textContent=x.nick}
+function side(){const s=$("side");s.innerHTML="";s.append(E("h4",0,tab==="S"?t().cities:t().regions));
+ const ids=(tab==="R"?["ALL"]:[]).concat(Object.keys(data()),["OTHER"]);
+ for(const c of ids){const b=E("button",c===area?"on":"",c==="ALL"?t().all:c==="OTHER"?t().other:nm(c));b.onclick=()=>{area=c;cur=null;side();pane()};s.append(b)}}
+const ends=a=>{const z=a.split(",");return z[0]+" → "+z[z.length-1]};
+function latest(key){const n=Date.now();return items.filter(x=>x.ts+TTL>n&&x.line+"|"+x.station===key).sort((a,b)=>b.ts-a.ts)[0]}
+function pane(){const p=$("pane"),x=t();p.innerHTML="";
+ if(area==="OTHER"){p.append(E("h3",0,x.other));
+  const a=E("label",0,x.ln),ai=E("input");ai.maxLength=50;ai.placeholder=x.ex;a.append(ai);
+  const b=E("label",0,x.st),bi=E("input");bi.maxLength=40;bi.placeholder=x.stp;b.append(bi);
+  p.append(a,b,btn(x.next,"bl",()=>{if(ai.value.trim()&&bi.value.trim())open(ai.value.trim(),bi.value.trim())}));return}
+ if(!cur){p.append(E("h3",0,tab==="S"?x.pickS+nm(area):x.pickR));
+  const regs=area==="ALL"?Object.keys(R):[area];
+  for(const g of regs)for(const[l,v]of Object.entries(data()[g])){
+   const row=E("div","lrow"),w=E("span");w.append(E("b",0,ends(v)));if(tab==="R"||area==="ALL")w.append(E("span","sub",nm(g)));
+   row.append(btn(l,CLS(l)+" ",null),w);row.onclick=()=>{area=g;cur=l;if(tab==="R")side();pane()};p.append(row)}
+  p.append(E("p","hint",x.note));return}
+ p.append(btn(x.back,"gy",()=>{cur=null;pane()}));
+ const v=data()[area][cur],h=E("h3",0,cur+" · "+ends(v)+" — "+x.tap);h.style.marginTop="10px";p.append(h);
+ const r=E("div","route");r.style.setProperty("--c",COL(cur));
+ for(const s of v.split(",")){const row=E("div","st");row.append(E("i","pt"),E("span",0,s));
+  const L=latest(area+" "+cur+"|"+s);if(L)row.append(E("span","tag t"+L.o,x.o[L.o]));
+  row.onclick=()=>open(area+" "+cur,s);r.append(row)}
+ p.append(r)}
+function open(line,st){pick={line,st};$("sh").textContent=line+" · "+st;$("ov").classList.add("on")}
+function close(){$("ov").classList.remove("on")}
+$("cx").onclick=close;$("ov").onclick=e=>{if(e.target===$("ov"))close()};
+document.querySelectorAll("[data-o]").forEach(b=>b.onclick=async()=>{
+ const nick=UID,r={o:+b.dataset.o,line:pick.line,station:pick.st,nick,ts:Date.now()};close();
+ $("me").dataset.s=1;$("me").textContent=t().saved(nick);
+ if(col){try{await col.doc("r"+r.ts+Math.floor(Math.random()*1e5)).set(r)}catch(e){$("me").textContent=t().err+(e.code||e.message)}}
+ else if(API){try{const z=await fetch("/api/reports",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(r)});if(!z.ok)throw 0;await load()}catch(e){$("me").textContent=t().err+"API"}}
+ else{items.push(r);feed()}});
+function feed(){const x=t(),a=items.filter(i=>i.ts+TTL>Date.now()).sort((p,q)=>q.ts-p.ts),f=$("feed");
+ $("cnt").textContent="("+a.length+")";f.innerHTML="";if(!a.length)f.append(E("li","hint",x.empty));
+ for(const i of a){const li=E("li"),w=E("span");w.append(E("b",0,i.line+" · "+i.station),E("br"),E("span","hint",i.nick));
+  li.append(E("span","tag t"+i.o,x.o[i.o]||"?"),w,E("span","meta",x.ago(Math.max(0,Math.round((Date.now()-i.ts)/6e4)))+" · "+x.left(Math.max(0,Math.round((i.ts+TTL-Date.now())/6e4)))));f.append(li)}
+ $("clock").textContent=new Date().toLocaleString(x.loc,{weekday:"short",hour:"2-digit",minute:"2-digit"})}
+function all(){chrome();side();pane();feed()}
+async function init(){let db=null;try{db=await claude.use("db")}catch(e){}
+ if(db){col=db.collection("reports");
+  col.onSnapshot(s=>{items=s.docs.map(d=>Object.assign({id:d.id},d.data()));
+   items.filter(x=>x.ts+TTL<Date.now()).forEach(x=>col.doc(x.id).delete().catch(()=>{}));feed();if(cur&&!$("ov").classList.contains("on"))pane()},
+  e=>{$("note").textContent=t().dberr});
+ }else{API=true;await load();setInterval(load,15000)}}
+async function load(){try{const r=await fetch("/api/reports");if(!r.ok)throw 0;items=await r.json();$("note").textContent="";feed();if(cur&&!$("ov").classList.contains("on"))pane()}catch(e){$("note").textContent=t().dberr}}
+all();setInterval(feed,30000);init();
+</script></body></html>
