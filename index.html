@@ -168,7 +168,7 @@ document.querySelectorAll("[data-o]").forEach(b=>b.onclick=async()=>{
  const nick=UID,r={o:+b.dataset.o,line:pick.line,station:pick.st,nick,ts:Date.now()};close();
  $("me").dataset.s=1;$("me").textContent=t().saved(nick);
  if(col){try{await col.doc("r"+r.ts+Math.floor(Math.random()*1e5)).set(r)}catch(e){$("me").textContent=t().err+(e.code||e.message)}}
- else if(API){try{const z=await fetch("/api/reports",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(r)});if(!z.ok)throw 0;await load()}catch(e){$("me").textContent=t().err+"API"}}
+ else if(API){try{await api(r);await load()}catch(e){$("me").textContent=t().err+e.message}}
  else{items.push(r);feed()}});
 function feed(){const x=t(),a=items.filter(i=>i.ts+TTL>Date.now()).sort((p,q)=>q.ts-p.ts),f=$("feed");
  $("cnt").textContent="("+a.length+")";f.innerHTML="";if(!a.length)f.append(E("li","hint",x.empty));
@@ -182,6 +182,7 @@ async function init(){let db=null;try{db=await claude.use("db")}catch(e){}
    items.filter(x=>x.ts+TTL<Date.now()).forEach(x=>col.doc(x.id).delete().catch(()=>{}));feed();if(cur&&!$("ov").classList.contains("on"))pane()},
   e=>{$("note").textContent=t().dberr});
  }else{API=true;await load();setInterval(load,15000)}}
-async function load(){try{const r=await fetch("/api/reports");if(!r.ok)throw 0;items=await r.json();$("note").textContent="";feed();if(cur&&!$("ov").classList.contains("on"))pane()}catch(e){$("note").textContent=t().dberr}}
+async function api(b){const r=await fetch("/api/reports",b?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}:{cache:"no-store"});let j=null;try{j=await r.json()}catch(e){}if(!r.ok)throw new Error(r.status+" "+((j&&j.error)||r.statusText));return j}
+async function load(){try{items=await api();$("note").textContent="";feed();if(cur&&!$("ov").classList.contains("on"))pane()}catch(e){$("note").textContent=t().dberr+" ("+e.message+")"}}
 all();setInterval(feed,30000);init();
 </script></body></html>
