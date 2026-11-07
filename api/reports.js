@@ -1,13 +1,20 @@
 const { Redis } = require("@upstash/redis");
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN,
-});
 const TTL = 3 * 3600 * 1000;
 const KEY = "reports";
 
+function env(re) {
+  const k = Object.keys(process.env).find((n) => re.test(n) && process.env[n]);
+  return k ? process.env[k] : undefined;
+}
+
 module.exports = async (req, res) => {
   res.setHeader("Cache-Control", "no-store");
+  const url = env(/(REST_API_URL|REST_URL)$/);
+  const token = env(/(REST_API_TOKEN|REST_TOKEN)$/);
+  if (!url || !token) {
+    return res.status(500).json({ error: "Redis env vars not found. Connect Upstash Redis in Storage and redeploy." });
+  }
+  const redis = new Redis({ url, token });
   const now = Date.now();
   try {
     if (req.method === "POST") {
@@ -28,6 +35,6 @@ module.exports = async (req, res) => {
     const list = raw.map((x) => (typeof x === "string" ? JSON.parse(x) : x));
     return res.status(200).json(list);
   } catch (e) {
-    return res.status(500).json({ error: "server error" });
+    return res.status(500).json({ error: String((e && e.message) || e).slice(0, 200) });
   }
 };
