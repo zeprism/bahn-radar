@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Контролёры DE</title>
+
+<!--
+  ГДЕ ЧТО НАХОДИТСЯ В ЭТОМ ФАЙЛЕ
+
+  1. <style>  ... </style>  — внешний вид (цвета, кнопки, окна). Это CSS.
+  2. <body>   ... </body>   — «скелет» страницы: пустые места, куда JavaScript потом вставляет текст и кнопки.
+  3. <script> ... </script> — вся логика: языки, выбор линии, сохранение записей. Это JavaScript.
+
+  Список линий и станций лежит в ОТДЕЛЬНОМ файле lines.js (он подключается ниже).
+-->
+
+<style>
+/* ============================================================
+   1. ОБЩИЕ НАСТРОЙКИ СТРАНИЦЫ
+   ============================================================ */
+
+/* Отступы сверху и снизу, чтобы на iPhone контент не залезал под вырез экрана */
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light;
+}
+
+/* Чтобы ширина элементов считалась вместе с рамками и отступами */
+* { box-sizing: border-box; }
+
+/* Шрифт и цвет текста на всей странице (шрифт как в Mac OS X Leopard) */
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font: 13px/1.4 "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #1c1c1c;
+}
+
+/* Обои: тёмно-фиолетовый фон с цветными пятнами света, как «Aurora» в Leopard */
+body {
+  background:
+    radial-gradient(ellipse 55% 22% at 72% 88%, #9fd0ffcc, transparent 70%),
+    radial-gradient(ellipse 70% 30% at 15% 105%, #b36bf0aa, transparent 70%),
+    radial-gradient(ellipse 40% 55% at 92% 18%, #5a46d8aa, transparent 70%),
+    radial-gradient(ellipse 45% 40% at 5% 25%, #3b2aa8aa, transparent 70%),
+    linear-gradient(#07041f, #150c52 50%, #28288c);
+  background-attachment: fixed;
+  padding-bottom: 50px;
+  overflow-x: hidden;
+}
+
+/* Светящаяся дуга внизу экрана (часть обоев) */
+body::before {
+  content: "";
+  position: fixed;
+  left: -20%; right: -20%; bottom: -8%;
+  height: 46%;
+  border-radius: 50%;
+  border-top: 3px solid #dff0ffcc;
+  box-shadow: 0 -6px 30px 6px #8cc4ff99, 0 -30px 90px 20px #a57bff66;
+  transform: rotate(-6deg);
+  filter: blur(1.5px);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ============================================================
+   2. СТРОКА МЕНЮ СВЕРХУ (яблоко, название, языки, номер, онлайн, часы)
+   ============================================================ */
+.menubar {
+  position: sticky; top: 0; z-index: 5;
+  height: 22px;
+  display: flex; gap: 18px; align-items: center;
+  padding: 0 14px;
+  background: linear-gradient(#fafafa, #d9d9d9 50%, #c9c9c9 51%, #d4d4d4);
+  border-bottom: 1px solid #6d6d6d;
+  font-size: 12.5px;
+  box-shadow: 0 1px 5px #0007;
+}
+
+/* Яблоко и название — кликабельные */
+#apple, #app { cursor: pointer; }
+#apple:hover, #app:hover { text-decoration: underline; }
+
+/* Зелёная метка «● 3 онлайн» */
+#on { color: #1d7a1d; white-space: nowrap; }
+
+/* Блок с кнопками RU / EN / DE (прижат вправо) */
+.lang { margin-left: auto; display: flex; gap: 4px; align-items: center; }
+.lang .btn { height: 17px; padding: 0 8px; font-size: 10px; border-radius: 9px; }
+.lang .btn::before { top: 1px; height: 40%; }
+
+/* На телефоне прячем «Файл» и часы, чтобы всё поместилось */
+@media (max-width: 620px) { #mf, #clock { display: none; } }
+
+/* ============================================================
+   3. ГЛАВНОЕ ОКНО (как окно Finder)
+   ============================================================ */
+.win {
+  max-width: 860px;
+  margin: 26px auto 14px;
+  border-radius: 9px 9px 5px 5px;
+  overflow: hidden;
+  background: #e6e6e6;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 22px 60px #000b, 0 0 0 1px #fff4 inset;
+}
+
+/* Заголовок окна с тремя цветными кружками */
+.title {
+  height: 28px;
+  display: flex; align-items: center;
+  padding: 0 10px;
+  background: linear-gradient(#f2f2f2, #d2d2d2 50%, #bdbdbd 51%, #cfcfcf);
+  border-bottom: 1px solid #5e5e5e;
+  position: relative;
+}
+.title span {
+  position: absolute; left: 0; right: 0;
+  text-align: center; font-weight: bold;
+  text-shadow: 0 1px #fffc;
+  pointer-events: none;
+}
+
+/* Цветные кружки: красный, жёлтый, зелёный */
+.dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  margin-right: 7px;
+  border: 1px solid #0006;
+  position: relative;
+  box-shadow: inset 0 -2px 3px #0003;
+}
+.dot::after { /* блик на кружке */
+  content: "";
+  position: absolute; left: 2px; right: 2px; top: 1px; height: 5px;
+  border-radius: 50%;
+  background: linear-gradient(#fffe, #fff3);
+}
+.d1 { background: radial-gradient(circle at 50% 80%, #ff8a7a, #d92c1c); }
+.d2 { background: radial-gradient(circle at 50% 80%, #ffe27a, #d99a05); }
+.d3 { background: radial-gradient(circle at 50% 80%, #9ef07a, #23a01c); }
+
+/* Полоска с вкладками «S-Bahn» и «Региональные» */
+.tabs {
+  display: flex; gap: 10px; justify-content: center;
+  padding: 8px;
+  background: linear-gradient(#dcdcdc, #c4c4c4);
+  border-bottom: 1px solid #777;
+}
+.tabs .btn { height: 32px; min-width: 130px; }
+
+/* Под вкладками: слева список городов, справа основная панель */
+.main { display: flex; min-height: 430px; }
+
+/* Левая колонка (список городов или регионов) */
+.side {
+  flex: 0 0 170px;
+  background: linear-gradient(90deg, #dde4ee, #d0d9e6);
+  border-right: 1px solid #8c97a8;
+  padding: 8px 0;
+}
+.side h4 { margin: 6px 12px 3px; font-size: 10px; color: #6a7384; text-transform: uppercase; }
+.side button {
+  display: block; width: 100%;
+  text-align: left;
+  border: 0; background: none;
+  padding: 4px 14px;
+  font: 13px inherit;
+  cursor: pointer; color: #111;
+}
+/* Выбранный пункт подсвечивается синим */
+.side button.on {
+  color: #fff;
+  text-shadow: 0 -1px #0007;
+  background: linear-gradient(#7aa6dc, #3f73bd 50%, #2d62b0 51%, #4a82cc);
+  box-shadow: inset 0 1px #fff6;
+}
+
+/* Правая панель с полосатым фоном */
+.pane {
+  flex: 1; min-width: 0;
+  padding: 16px;
+  background: repeating-linear-gradient(#f1f1f1 0 2px, #ececec 2px 4px);
+}
+
+/* Заголовки внутри панели */
+h3 { margin: 0 0 10px; font-size: 14px; text-shadow: 0 1px #fff; }
+
+/* Подписи мелким серым шрифтом */
+.hint { font-size: 11px; color: #555; }
+.sub  { font-size: 11px; color: #666; display: block; }
+
+/* На телефоне: города идут полоской сверху, а не слева */
+@media (max-width: 620px) {
+  .main { flex-direction: column; }
+  .side {
+    flex: none;
+    border-right: 0; border-bottom: 1px solid #8c97a8;
+    display: flex; overflow-x: auto; padding: 4px;
+  }
+  .side h4 { display: none; }
+  .side button { width: auto; white-space: nowrap; }
+}
+
+/* ============================================================
+   4. «ЛИЗАТЕЛЬНЫЕ» КНОПКИ AQUA
+   Цвета кнопки задаются переменными --a, --b, --c, --e (градиент),
+   --d (рамка) и --g (свечение внизу). Ниже — готовые наборы цветов.
+   ============================================================ */
+.btn {
+  position: relative;
+  font: bold 13px "Lucida Grande", Arial, sans-serif;
+  color: #fff;
+  text-shadow: 0 -1px 1px #0008;
+  padding: 0 16px; height: 30px;
+  border-radius: 15px;
+  border: 1px solid var(--d);
+  cursor: pointer;
+  background: linear-gradient(var(--a), var(--b) 50%, var(--c) 51%, var(--e));
+  box-shadow: 0 3px 6px #0006, 0 1px 1px #0004, inset 0 -4px 8px var(--g), inset 0 0 0 1px #fff3;
+}
+/* Белый глянцевый блик в верхней половине кнопки */
+.btn::before {
+  content: "";
+  position: absolute; left: 5%; right: 5%; top: 2px; height: 46%;
+  border-radius: 14px 14px 40% 40%;
+  background: linear-gradient(#fffffff2, #ffffff40);
+  pointer-events: none;
+}
+.btn span { position: relative; z-index: 1; } /* текст поверх блика */
+.btn:hover  { filter: brightness(1.1) saturate(1.1); }
+.btn:active { filter: brightness(.82); box-shadow: 0 1px 2px #0006, inset 0 3px 8px #0008; } /* «вдавливается» */
+
+/* Наборы цветов: синяя, зелёная, красная, оранжевая, серая */
+.bl { --a:#9cc8ff; --b:#4a90ee; --c:#1b5fd6; --e:#5eb0ff; --d:#123e91; --g:#9fe0ff; }
+.gr { --a:#b7f0a0; --b:#5fc443; --c:#2f9a1c; --e:#7fe058; --d:#1d6a10; --g:#c9ffa8; }
+.rd { --a:#ffb4a8; --b:#f0563f; --c:#c92a14; --e:#ff7b62; --d:#8a1708; --g:#ffc0a8; }
+.or { --a:#ffdc9c; --b:#fba728; --c:#e08000; --e:#ffc255; --d:#965200; --g:#fff0a8; }
+.gy {
+  --a:#f7f7f7; --b:#d6d6d6; --c:#b4b4b4; --e:#e4e4e4; --d:#6f6f6f; --g:#fff;
+  color: #222; text-shadow: 0 1px #fff9;
+  height: 24px; font-size: 12px;
+}
+
+/* ============================================================
+   5. СПИСОК ЛИНИЙ И СХЕМА МАРШРУТА
+   ============================================================ */
+
+/* Одна строка в списке линий: кнопка с номером линии + «откуда → куда» */
+.lrow {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; margin-bottom: 8px;
+  border-radius: 8px;
+  border: 1px solid #b5b5b5;
+  background: linear-gradient(#fff, #e9e9e9);
+  cursor: pointer;
+  box-shadow: 0 1px 3px #0003;
+}
+.lrow:hover { background: linear-gradient(#fff, #d6e6fb); }
+.lrow .btn { height: 26px; min-width: 58px; flex: none; cursor: pointer; }
+
+/* Схема маршрута: вертикальная линия с точками-станциями */
+.route { margin: 6px 0 0 6px; }
+.st {
+  display: flex; align-items: center; gap: 12px;
+  position: relative;
+  min-height: 38px;
+  cursor: pointer;
+  border-radius: 6px;
+  padding-right: 6px;
+}
+.st:hover { background: #fff8; }
+
+/* Цветная линия, проходящая через все станции (цвет берётся из переменной --c) */
+.st::before {
+  content: "";
+  position: absolute; left: 10px; top: 0; bottom: 0;
+  width: 7px; margin-left: -3px;
+  background: var(--c);
+}
+.st:first-child::before { top: 50%; }    /* у первой станции линия идёт только вниз */
+.st:last-child::before  { bottom: 50%; } /* у последней — только вверх */
+
+/* Круглая «точка» станции */
+.pt {
+  flex: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 3px solid var(--c);
+  background: radial-gradient(circle at 50% 30%, #fff, #e8e8e8 60%, #bbb);
+  box-shadow: 0 2px 4px #0006, inset 0 -2px 3px #0003;
+  position: relative; z-index: 1;
+}
+.st:hover .pt { border-width: 4px; }
+
+/* Цветная метка у станции: «Контролёр есть» и т. д. */
+.tag {
+  margin-left: auto;
+  padding: 2px 9px;
+  border-radius: 10px;
+  color: #fff; font-size: 11px; font-weight: bold;
+  text-shadow: 0 -1px #0006;
+  background: #888;
+  white-space: nowrap;
+}
+.t0 { background: #d9473a; } /* контролёр есть            — красный    */
+.t1 { background: #41a82a; } /* контролёра нет            — зелёный    */
+.t2 { background: #e08e1b; } /* был, когда я зашёл        — оранжевый  */
+.t3 { background: #3a7bd5; } /* был, когда я вышел        — синий      */
+
+/* ============================================================
+   6. ЛЕНТА СООБЩЕНИЙ ВНИЗУ
+   ============================================================ */
+.box {
+  max-width: 860px;
+  margin: 0 auto 16px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: linear-gradient(#fff, #efefef);
+  box-shadow: 0 12px 30px #0009;
+}
+#feed { list-style: none; margin: 0; padding: 0; max-height: 340px; overflow: auto; }
+#feed li { display: flex; gap: 8px; align-items: center; padding: 7px 8px; border-bottom: 1px solid #ddd; }
+#feed li:nth-child(even) { background: #eaf1fb; } /* чётные строки чуть голубее */
+.meta { margin-left: auto; text-align: right; font-size: 11px; color: #666; white-space: nowrap; }
+
+/* Поля ввода на вкладке «Другое» */
+input {
+  display: block; width: 100%;
+  margin-top: 3px; padding: 6px;
+  font: 13px inherit;
+  border: 1px solid #888; border-radius: 4px;
+  background: #fff;
+  box-shadow: inset 0 1px 3px #0003;
+}
+label { font-weight: bold; font-size: 11px; display: block; margin-bottom: 8px; }
+
+/* ============================================================
+   7. ВСПЛЫВАЮЩИЕ ОКНА
+   ============================================================ */
+
+/* Тёмная подложка на весь экран (скрыта, пока нет класса .on) */
+.ov {
+  position: fixed; inset: 0;
+  background: #0007;
+  display: none;
+  align-items: flex-start; justify-content: center;
+  z-index: 20;
+}
+.ov.on { display: flex; }
+
+/* Окно с 4 вариантами: выезжает сверху, как «sheet» в Leopard */
+.sheet {
+  margin-top: 26px;
+  width: min(440px, 94vw);
+  padding: 18px;
+  border-radius: 0 0 10px 10px;
+  background: linear-gradient(#f4f4f4, #dcdcdc);
+  border: 1px solid #333; border-top: 0;
+  box-shadow: 0 14px 40px #000b;
+  animation: slideDown .25s ease-out;
+}
+@keyframes slideDown { from { transform: translateY(-100%); } }
+.sheet .btn { display: block; width: 100%; height: 38px; margin-bottom: 10px; font-size: 14px; border-radius: 19px; }
+.sheet .btn::before { border-radius: 18px 18px 40% 40%; }
+
+/* Окна «Об этом Mac» и «О программе» */
+.dlg {
+  width: min(420px, 94vw);
+  border-radius: 8px;
+  overflow: hidden;
+  background: linear-gradient(#f6f6f6, #dedede);
+  border: 1px solid #222;
+  box-shadow: 0 20px 60px #000c;
+  animation: popIn .18s ease-out;
+}
+@keyframes popIn { from { transform: scale(.94); opacity: 0; } }
+.dbody { padding: 18px 22px 20px; text-align: center; }
+.dbody h2 { margin: 8px 0 2px; font-size: 18px; text-shadow: 0 1px #fff; }
+.dbody p { margin: 8px 0; font-size: 12.5px; }
+.dbody table { margin: 12px auto; font-size: 12.5px; text-align: left; border-collapse: collapse; }
+.dbody td { padding: 2px 0; }
+.dbody td:first-child { color: #666; padding-right: 14px; text-align: right; }
+.dbody .btn { margin-top: 10px; min-width: 90px; }
+
+/* Рисунок iMac G3, нарисованный только средствами CSS */
+.imac { width: 100px; height: 96px; margin: 0 auto 6px; position: relative; }
+.imac::before { /* корпус */
+  content: "";
+  position: absolute; left: 0; right: 0; top: 0; height: 78px;
+  border-radius: 46% 46% 40% 40% / 54% 54% 40% 40%;
+  background: radial-gradient(circle at 38% 28%, #9ef0f8, #2aa7c8 60%, #18738f);
+  box-shadow: inset 0 -5px 9px #0005, 0 3px 7px #0004;
+}
+.imac::after { /* экран */
+  content: "";
+  position: absolute; left: 19px; right: 19px; top: 13px; height: 48px;
+  border-radius: 9px;
+  background: radial-gradient(circle at 40% 30%, #c8ecff, #3a7ea8 70%);
+  border: 3px solid #d8f4f8;
+  box-shadow: inset 0 0 7px #000a;
+}
+.imac i { /* подставка */
+  position: absolute; left: 30px; right: 30px; bottom: 0; height: 16px;
+  border-radius: 0 0 9px 9px;
+  background: linear-gradient(#eaf7fa, #9bd4e0);
+  box-shadow: 0 2px 4px #0004;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ============ СТРОКА МЕНЮ СВЕРХУ ============ -->
+<!-- Пустые теги <b id="..."> и <span id="..."> заполняет JavaScript (по их id) -->
+<div class="menubar">
+  <b id="apple">&#63743;</b>   <!-- значок яблока: по клику открывается «Об этом Mac» -->
+  <b id="app"></b>             <!-- название сайта: по клику открывается «О программе» -->
+  <span id="mf"></span>        <!-- пункт «Файл» -->
+  <div class="lang" id="lang"></div>  <!-- кнопки RU / EN / DE -->
+  <b id="uid"></b>             <!-- «Ваш номер: User12345» -->
+  <b id="on"></b>              <!-- «● 3 онлайн» -->
+  <span id="clock"></span>     <!-- часы -->
+</div>
+
+<!-- ============ ГЛАВНОЕ ОКНО ============ -->
+<div class="win">
+  <div class="title">
+    <i class="dot d1"></i><i class="dot d2"></i><i class="dot d3"></i>
+    <span id="wt"></span>        <!-- заголовок окна -->
+  </div>
+  <div class="tabs" id="tabs"></div>   <!-- вкладки «S-Bahn» и «Региональные» -->
+  <div class="main">
+    <div class="side" id="side"></div> <!-- слева: города / регионы -->
+    <div class="pane" id="pane"></div> <!-- справа: линии или схема маршрута -->
+  </div>
+</div>
+
+<!-- ============ ЛЕНТА СООБЩЕНИЙ ============ -->
+<div class="box">
+  <h3><span id="ft"></span> <span class="hint" id="cnt"></span></h3>
+  <p class="hint" id="me"></p>   <!-- подсказка про ваш номер и 3 часа -->
+  <ul id="feed"></ul>            <!-- сюда выводятся все записи -->
+  <p class="hint" id="note"></p> <!-- сюда выводятся ошибки связи -->
+</div>
+
+<!-- ============ ОКНО С 4 ВАРИАНТАМИ (по умолчанию скрыто) ============ -->
+<div class="ov" id="ov">
+  <div class="sheet">
+    <h3 id="sh"></h3>   <!-- сюда подставляется «линия · станция» -->
+    <!-- data-o — номер варианта: 0, 1, 2 или 3 -->
+    <button class="btn rd" data-o="0"><span></span></button>
+    <button class="btn gr" data-o="1"><span></span></button>
+    <button class="btn or" data-o="2"><span></span></button>
+    <button class="btn bl" data-o="3"><span></span></button>
+    <button class="btn gy" id="cx"><span></span></button>  <!-- «Отмена» -->
+  </div>
+</div>
+
+<!-- ============ ОКНА «ОБ ЭТОМ MAC» И «О ПРОГРАММЕ» (по умолчанию скрыто) ============ -->
+<div class="ov" id="dov" style="align-items:center">
+  <div class="dlg">
+    <div class="title">
+      <i class="dot d1" id="dx"></i><i class="dot d2"></i><i class="dot d3"></i>
+      <span id="dt"></span>
+    </div>
+    <div class="dbody" id="dc"></div>
+  </div>
+</div>
+
+<!-- Подключаем файл со списком линий и станций (должен лежать рядом с index.html) -->
+<script src="lines.js"></script>
+
+<script>
+/* ==================================================================
+   JAVASCRIPT — ЛОГИКА САЙТА
+
+   Что здесь происходит, по порядку:
+   1. Настройки и тексты на трёх языках
+   2. Ваш личный номер (User12345)
+   3. Маленькие помощники
+   4. Рисование: верхняя панель, левое меню, список линий, схема маршрута
+   5. Окно выбора из 4 вариантов и сохранение записи
+   6. Окна «Об этом Mac» и «О программе»
+   7. Лента сообщений
+   8. Связь с сервером (загрузка записей, счётчик онлайн)
+   9. Запуск сайта
+
+   Данные линий (переменные S, R, NM и функция P) приходят из файла lines.js.
+   ================================================================== */
+
+
+/* ------------------------------------------------------------------
+   1. НАСТРОЙКИ И ТЕКСТЫ
+   ------------------------------------------------------------------ */
+
+// Запись живёт 3 часа (в миллисекундах: 3 часа * 60 минут * 60 секунд * 1000)
+const LIFETIME = 3 * 60 * 60 * 1000;
+
+// Какой по счёту перевод брать из названий городов (см. NM в lines.js)
+const LANG_INDEX = { ru: 0, en: 1, de: 2 };
+
+// Подписи в верхней панели на трёх языках
+const ID_LABEL     = { ru: "Ваш номер", en: "Your ID", de: "Deine Nummer" };
+const ONLINE_LABEL = { ru: "онлайн",    en: "online",  de: "online" };
+
+// Превращает минуты в [часы, минуты]. Например, 135 -> [2, 15]
+function splitMinutes(m) {
+  return [Math.floor(m / 60), m % 60];
+}
+
+// ВСЕ ТЕКСТЫ САЙТА на трёх языках. Хочешь поменять надпись — правь здесь.
+const TEXTS = {
+
+  // ---------- РУССКИЙ ----------
+  ru: {
+    appName: "Контролёры",
+    fileMenu: "Файл",
+    windowTitle: "Где контролёр?",
+    tabS: "S-Bahn",
+    tabR: "Региональные",
+    allTrains: "Все поезда",
+    cities: "Города",
+    regions: "Регионы",
+    other: "Другое",
+    pickLineS: "Выберите линию — ",
+    pickLineR: "Региональные поезда: откуда → куда",
+    note: "Показаны основные линии и ключевые станции. Чего нет в списке — вкладка «Другое».",
+    back: "‹ Назад",
+    tapStation: "нажмите на станцию",
+    // Четыре варианта выбора (по порядку: 0, 1, 2, 3)
+    options: ["Контролёр есть", "Контролёра нет", "Был, когда я зашёл", "Был, когда я вышел"],
+    cancel: "Отмена",
+    feedTitle: "Сообщения всех пользователей",
+    idInfo: "Ваш номер присвоен при входе на сайт, под ним появляются все ваши записи. Записи удаляются через 3 часа.",
+    saved: function (id) { return "Ваш ник: " + id + " — запись сохранена."; },
+    empty: "Пока пусто. Будьте первым!",
+    lineLabel: "Линия / поезд (откуда → куда)",
+    linePlaceholder: "например RE 1 Hamm → Aachen",
+    stationLabel: "Станция",
+    stationPlaceholder: "название станции",
+    next: "Далее",
+    noDb: "Общая база недоступна (нужен вход в Claude): записи видны только вам.",
+    dbError: "Ошибка загрузки общей базы.",
+    saveError: "Не удалось сохранить: ",
+    // Окно «Об этом Mac»
+    aboutMac: "Об этом Mac",
+    model: "Модель",
+    processor: "Процессор",
+    memory: "Память",
+    serial: "Серийный номер",
+    software: "Система",
+    // Окно «О программе»
+    aboutApp: "О программе",
+    version: "Версия 1.0",
+    disclaimer: "Автор сайта не может гарантировать правдивость того, что отметили пользователи. Записи анонимны и могут быть неточными или устаревшими.",
+    ok: "OK",
+    // Как показывать время: «5 мин назад» и «ещё 2 ч 55 мин»
+    ago: function (m) {
+      const t = splitMinutes(m);
+      if (m < 1) return "только что";
+      if (m < 60) return m + " мин назад";
+      return t[0] + " ч " + t[1] + " мин назад";
+    },
+    left: function (m) {
+      const t = splitMinutes(m);
+      return "ещё " + t[0] + " ч " + t[1] + " мин";
+    },
+    locale: "ru-RU"
+  },
+
+  // ---------- ENGLISH ----------
+  en: {
+    appName: "Inspectors",
+    fileMenu: "File",
+    windowTitle: "Where is the inspector?",
+    tabS: "S-Bahn",
+    tabR: "Regional",
+    allTrains: "All trains",
+    cities: "Cities",
+    regions: "Regions",
+    other: "Other",
+    pickLineS: "Choose a line — ",
+    pickLineR: "Regional trains: from → to",
+    note: "Main lines and key stations are shown. Anything missing: use the “Other” tab.",
+    back: "‹ Back",
+    tapStation: "tap a station",
+    options: ["Inspector present", "No inspector", "Was there when I got on", "Was there when I got off"],
+    cancel: "Cancel",
+    feedTitle: "Reports from everyone",
+    idInfo: "Your ID was assigned when you opened the site; all your reports appear under it. Reports are deleted after 3 hours.",
+    saved: function (id) { return "Your nickname: " + id + " — report saved."; },
+    empty: "Nothing yet. Be the first!",
+    lineLabel: "Line / train (from → to)",
+    linePlaceholder: "e.g. RE 1 Hamm → Aachen",
+    stationLabel: "Station",
+    stationPlaceholder: "station name",
+    next: "Next",
+    noDb: "Shared database unavailable (Claude sign-in needed): reports are visible only to you.",
+    dbError: "Could not load the shared database.",
+    saveError: "Could not save: ",
+    aboutMac: "About This Mac",
+    model: "Model",
+    processor: "Processor",
+    memory: "Memory",
+    serial: "Serial Number",
+    software: "Software",
+    aboutApp: "About Inspectors",
+    version: "Version 1.0",
+    disclaimer: "The author of this site cannot guarantee that what users report is true. Reports are anonymous and may be inaccurate or outdated.",
+    ok: "OK",
+    ago: function (m) {
+      const t = splitMinutes(m);
+      if (m < 1) return "just now";
+      if (m < 60) return m + " min ago";
+      return t[0] + " h " + t[1] + " min ago";
+    },
+    left: function (m) {
+      const t = splitMinutes(m);
+      return t[0] + " h " + t[1] + " min left";
+    },
+    locale: "en-GB"
+  },
+
+  // ---------- DEUTSCH ----------
+  de: {
+    appName: "Kontrolleure",
+    fileMenu: "Ablage",
+    windowTitle: "Wo ist der Kontrolleur?",
+    tabS: "S-Bahn",
+    tabR: "Regional",
+    allTrains: "Alle Züge",
+    cities: "Städte",
+    regions: "Regionen",
+    other: "Andere",
+    pickLineS: "Linie wählen — ",
+    pickLineR: "Regionalzüge: von → nach",
+    note: "Gezeigt werden Hauptlinien und wichtige Stationen. Fehlt etwas: Reiter „Andere“.",
+    back: "‹ Zurück",
+    tapStation: "Station antippen",
+    options: ["Kontrolleur da", "Kein Kontrolleur", "War da, als ich einstieg", "War da, als ich ausstieg"],
+    cancel: "Abbrechen",
+    feedTitle: "Meldungen aller Nutzer",
+    idInfo: "Deine Nummer wurde beim Öffnen der Seite vergeben; alle deine Meldungen erscheinen darunter. Meldungen werden nach 3 Stunden gelöscht.",
+    saved: function (id) { return "Dein Nickname: " + id + " — Meldung gespeichert."; },
+    empty: "Noch nichts. Sei der Erste!",
+    lineLabel: "Linie / Zug (von → nach)",
+    linePlaceholder: "z. B. RE 1 Hamm → Aachen",
+    stationLabel: "Station",
+    stationPlaceholder: "Name der Station",
+    next: "Weiter",
+    noDb: "Gemeinsame Datenbank nicht verfügbar (Claude-Login nötig): Meldungen sind nur für dich sichtbar.",
+    dbError: "Datenbank konnte nicht geladen werden.",
+    saveError: "Speichern fehlgeschlagen: ",
+    aboutMac: "Über diesen Mac",
+    model: "Modell",
+    processor: "Prozessor",
+    memory: "Speicher",
+    serial: "Seriennummer",
+    software: "Software",
+    aboutApp: "Über Kontrolleure",
+    version: "Version 1.0",
+    disclaimer: "Der Autor dieser Seite kann nicht garantieren, dass die Angaben der Nutzer wahr sind. Meldungen sind anonym und können ungenau oder veraltet sein.",
+    ok: "OK",
+    ago: function (m) {
+      const t = splitMinutes(m);
+      if (m < 1) return "gerade eben";
+      if (m < 60) return "vor " + m + " Min.";
+      return "vor " + t[0] + " Std. " + t[1] + " Min.";
+    },
+    left: function (m) {
+      const t = splitMinutes(m);
+      return "noch " + t[0] + " Std. " + t[1] + " Min.";
+    },
+    locale: "de-DE"
+  }
+};
+
+
+/* ------------------------------------------------------------------
+   2. ВАШ ЛИЧНЫЙ НОМЕР
+   При первом заходе придумываем номер вида User12345 и запоминаем его
+   в браузере (localStorage). При следующем заходе берём тот же номер.
+   ------------------------------------------------------------------ */
+let myId = null;
+try { myId = localStorage.getItem("uid"); } catch (e) {}
+if (!myId) {
+  myId = "User" + Math.floor(10000 + Math.random() * 90000);
+  try { localStorage.setItem("uid", myId); } catch (e) {}
+}
+
+
+/* ------------------------------------------------------------------
+   3. МАЛЕНЬКИЕ ПОМОЩНИКИ И СОСТОЯНИЕ САЙТА
+   ------------------------------------------------------------------ */
+
+// Короткая запись для «найти элемент страницы по id»
+function byId(id) { return document.getElementById(id); }
+
+// Создаёт элемент: makeEl("div", "класс", "текст")
+function makeEl(tag, className, text) {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (text != null) el.textContent = text;
+  return el;
+}
+
+// Создаёт глянцевую кнопку Aqua: текст, цвет (bl/gr/rd/or/gy) и что делать при клике
+function makeButton(text, colorClass, onClick) {
+  const b = makeEl("button", "btn " + colorClass);
+  b.append(makeEl("span", 0, text));
+  if (onClick) b.onclick = onClick;
+  return b;
+}
+
+// Цвет линии: S-Bahn — зелёный, всё остальное — красный
+function lineColor(lineName) { return /^S/.test(lineName) ? "#12904f" : "#d4231f"; }
+function lineButtonClass(lineName) { return /^S/.test(lineName) ? "gr" : "rd"; }
+
+// Выбираем язык: сначала тот, что сохранён в браузере, иначе язык браузера, иначе русский
+let currentLang = "ru";
+try {
+  const saved = localStorage.getItem("lg");
+  if (TEXTS[saved]) {
+    currentLang = saved;
+  } else {
+    const browserLang = (navigator.language || "").slice(0, 2);
+    if (TEXTS[browserLang]) currentLang = browserLang;
+  }
+} catch (e) {}
+
+// Текущее состояние: что сейчас выбрано на экране
+let currentTab = "S";     // "S" = вкладка S-Bahn, "R" = вкладка «Региональные»
+let currentArea = "Berlin"; // выбранный город/регион ("ALL" = все поезда, "OTHER" = вкладка «Другое»)
+let currentLine = null;   // выбранная линия (например "S1") или null, если ещё не выбрана
+let picked = null;        // что человек нажал: { line: "...", station: "..." }
+let reports = [];         // все записи, которые сейчас видны в ленте
+let claudeDb = null;      // общая база Claude (нужна только при запуске внутри Claude)
+let useServer = false;    // true, когда сайт работает на Vercel и общается с нашим сервером
+let onlineCount = null;   // сколько человек сейчас на сайте
+
+// Короткие помощники
+function tx() { return TEXTS[currentLang]; }                       // тексты текущего языка
+function nameOf(id) { return (NM[id] || [])[LANG_INDEX[currentLang]] || id; } // название города/региона
+function currentData() { return currentTab === "S" ? S : R; }      // данные текущей вкладки
+
+
+/* ------------------------------------------------------------------
+   4. РИСОВАНИЕ ЭКРАНА
+   ------------------------------------------------------------------ */
+
+// Верхняя строка меню, вкладки и подписи на кнопках в окне выбора
+function drawTopBars() {
+  const x = tx();
+  byId("app").textContent = x.appName;
+  byId("mf").textContent = x.fileMenu;
+  byId("wt").textContent = x.windowTitle;
+  byId("uid").textContent = ID_LABEL[currentLang] + ": " + myId;
+  byId("on").textContent = onlineCount == null ? "" : "● " + onlineCount + " " + ONLINE_LABEL[currentLang];
+
+  // Кнопки RU / EN / DE (выбранный язык синий, остальные серые)
+  const langBox = byId("lang");
+  langBox.innerHTML = "";
+  for (const code of ["ru", "en", "de"]) {
+    langBox.append(makeButton(code.toUpperCase(), code === currentLang ? "bl" : "gy", function () {
+      currentLang = code;
+      try { localStorage.setItem("lg", code); } catch (e) {}
+      redrawAll();
+    }));
+  }
+
+  // Две вкладки: S-Bahn (зелёная) и Региональные (красная)
+  const tabsBox = byId("tabs");
+  tabsBox.innerHTML = "";
+  tabsBox.append(
+    makeButton(x.tabS, currentTab === "S" ? "gr" : "gy", function () {
+      currentTab = "S"; currentArea = "Berlin"; currentLine = null; redrawAll();
+    }),
+    makeButton(x.tabR, currentTab === "R" ? "rd" : "gy", function () {
+      currentTab = "R"; currentArea = "ALL"; currentLine = null; redrawAll();
+    })
+  );
+
+  // Подписи на четырёх кнопках выбора и на кнопке «Отмена»
+  document.querySelectorAll("[data-o]").forEach(function (button) {
+    button.firstChild.textContent = x.options[+button.dataset.o];
+  });
+  byId("cx").firstChild.textContent = x.cancel;
+
+  byId("ft").textContent = x.feedTitle;
+  // Подсказку про номер показываем, пока человек ещё ничего не сохранял
+  if (!byId("me").dataset.saved) byId("me").textContent = x.idInfo;
+}
+
+// Левое меню: список городов (вкладка S-Bahn) или регионов (вкладка «Региональные»)
+function drawSidebar() {
+  const box = byId("side");
+  box.innerHTML = "";
+  box.append(makeEl("h4", 0, currentTab === "S" ? tx().cities : tx().regions));
+
+  // На вкладке «Региональные» первым пунктом идёт «Все поезда», в конце всегда «Другое»
+  const ids = (currentTab === "R" ? ["ALL"] : []).concat(Object.keys(currentData()), ["OTHER"]);
+  for (const id of ids) {
+    const label = id === "ALL" ? tx().allTrains : id === "OTHER" ? tx().other : nameOf(id);
+    const b = makeEl("button", id === currentArea ? "on" : "", label);
+    b.onclick = function () {
+      currentArea = id; currentLine = null;
+      drawSidebar(); drawPane();
+    };
+    box.append(b);
+  }
+}
+
+// «Откуда → куда»: берём первую и последнюю станцию из списка "А,Б,В,Г"
+function fromTo(stationsText) {
+  const list = stationsText.split(",");
+  return list[0] + " → " + list[list.length - 1];
+}
+
+// Ищем самую свежую запись для данной станции (чтобы показать цветную метку на схеме)
+function latestReport(key) {
+  const now = Date.now();
+  return reports
+    .filter(function (r) { return r.ts + LIFETIME > now && r.line + "|" + r.station === key; })
+    .sort(function (a, b) { return b.ts - a.ts; })[0];
+}
+
+// Правая панель. Она бывает в трёх видах:
+//   а) вкладка «Другое» — два поля ввода
+//   б) список линий выбранного города/региона
+//   в) схема маршрута выбранной линии со станциями
+function drawPane() {
+  const pane = byId("pane");
+  const x = tx();
+  pane.innerHTML = "";
+
+  // --- а) вкладка «Другое»: человек сам вписывает линию и станцию ---
+  if (currentArea === "OTHER") {
+    pane.append(makeEl("h3", 0, x.other));
+
+    const lineLabel = makeEl("label", 0, x.lineLabel);
+    const lineInput = makeEl("input");
+    lineInput.maxLength = 50;
+    lineInput.placeholder = x.linePlaceholder;
+    lineLabel.append(lineInput);
+
+    const stationLabel = makeEl("label", 0, x.stationLabel);
+    const stationInput = makeEl("input");
+    stationInput.maxLength = 40;
+    stationInput.placeholder = x.stationPlaceholder;
+    stationLabel.append(stationInput);
+
+    pane.append(lineLabel, stationLabel, makeButton(x.next, "bl", function () {
+      // Идём дальше, только если оба поля заполнены
+      if (lineInput.value.trim() && stationInput.value.trim()) {
+        openChoice(lineInput.value.trim(), stationInput.value.trim());
+      }
+    }));
+    return;
+  }
+
+  // --- б) список линий ---
+  if (!currentLine) {
+    pane.append(makeEl("h3", 0, currentTab === "S" ? x.pickLineS + nameOf(currentArea) : x.pickLineR));
+
+    // "ALL" — показываем линии всех регионов; иначе только выбранного
+    const areas = currentArea === "ALL" ? Object.keys(R) : [currentArea];
+    for (const area of areas) {
+      for (const [lineName, stationsText] of Object.entries(currentData()[area])) {
+        const row = makeEl("div", "lrow");
+        const info = makeEl("span");
+        info.append(makeEl("b", 0, fromTo(stationsText)));
+        // В списке региональных подписываем, из какого региона линия
+        if (currentTab === "R" || currentArea === "ALL") info.append(makeEl("span", "sub", nameOf(area)));
+        row.append(makeButton(lineName, lineButtonClass(lineName) + " ", null), info);
+        row.onclick = function () {
+          currentArea = area; currentLine = lineName;
+          if (currentTab === "R") drawSidebar();
+          drawPane();
+        };
+        pane.append(row);
+      }
+    }
+    pane.append(makeEl("p", "hint", x.note));
+    return;
+  }
+
+  // --- в) схема маршрута выбранной линии ---
+  pane.append(makeButton(x.back, "gy", function () { currentLine = null; drawPane(); }));
+
+  const stationsText = currentData()[currentArea][currentLine];
+  const heading = makeEl("h3", 0, currentLine + " · " + fromTo(stationsText) + " — " + x.tapStation);
+  heading.style.marginTop = "10px";
+  pane.append(heading);
+
+  const route = makeEl("div", "route");
+  route.style.setProperty("--c", lineColor(currentLine)); // цвет линии на схеме
+
+  for (const station of stationsText.split(",")) {
+    const row = makeEl("div", "st");
+    row.append(makeEl("i", "pt"), makeEl("span", 0, station));
+
+    // Если на станции есть свежая запись — рисуем цветную метку справа
+    const last = latestReport(currentArea + " " + currentLine + "|" + station);
+    if (last) row.append(makeEl("span", "tag t" + last.o, x.options[last.o]));
+
+    row.onclick = function () { openChoice(currentArea + " " + currentLine, station); };
+    route.append(row);
+  }
+  pane.append(route);
+}
+
+
+/* ------------------------------------------------------------------
+   5. ОКНО С 4 ВАРИАНТАМИ И СОХРАНЕНИЕ ЗАПИСИ
+   ------------------------------------------------------------------ */
+
+// Открыть окно выбора для конкретной линии и станции
+function openChoice(line, station) {
+  picked = { line: line, station: station };
+  byId("sh").textContent = line + " · " + station;
+  byId("ov").classList.add("on");   // показать окно
+}
+
+// Закрыть окно выбора
+function closeChoice() { byId("ov").classList.remove("on"); }
+
+byId("cx").onclick = closeChoice;                                   // кнопка «Отмена»
+byId("ov").onclick = function (e) { if (e.target === byId("ov")) closeChoice(); }; // клик мимо окна
+
+// Что происходит, когда человек нажимает один из четырёх вариантов
+document.querySelectorAll("[data-o]").forEach(function (button) {
+  button.onclick = async function () {
+    // Собираем запись: вариант, линия, станция, ваш номер, время
+    const report = {
+      o: +button.dataset.o,
+      line: picked.line,
+      station: picked.station,
+      nick: myId,
+      ts: Date.now()
+    };
+    closeChoice();
+
+    // Сразу пишем «запись сохранена» (если сервер ответит ошибкой — текст заменится)
+    byId("me").dataset.saved = "1";
+    byId("me").textContent = tx().saved(myId);
+
+    if (claudeDb) {
+      // Вариант 1: сайт открыт внутри Claude — пишем в базу Claude
+      try {
+        await claudeDb.doc("r" + report.ts + Math.floor(Math.random() * 1e5)).set(report);
+      } catch (e) {
+        byId("me").textContent = tx().saveError + (e.code || e.message);
+      }
+    } else if (useServer) {
+      // Вариант 2: сайт на Vercel — отправляем запись на наш сервер (файл api/reports.js)
+      try {
+        await callServer(report);
+        await loadReports();
+      } catch (e) {
+        byId("me").textContent = tx().saveError + e.message;
+      }
+    } else {
+      // Вариант 3: базы нет — запись видна только на этом экране
+      reports.push(report);
+      drawFeed();
+    }
+  };
+});
+
+
+/* ------------------------------------------------------------------
+   6. ОКНА «ОБ ЭТОМ MAC» И «О ПРОГРАММЕ»
+   ------------------------------------------------------------------ */
+function closeAbout() { byId("dov").classList.remove("on"); }
+
+// kind = "mac"  → окно «Об этом Mac» (iMac G3 с серийным номером)
+// kind = "app"  → окно «О программе» (версия и предупреждение)
+function showAbout(kind) {
+  const x = tx();
+  const content = byId("dc");
+  content.innerHTML = "";
+
+  if (kind === "mac") {
+    byId("dt").textContent = x.aboutMac;
+    const picture = makeEl("div", "imac");
+    picture.append(makeEl("i"));
+    content.append(picture, makeEl("h2", 0, "iMac G3"));
+
+    // Таблица характеристик (серийный номер выдуманный)
+    const table = makeEl("table");
+    const rows = [
+      [x.model,     "iMac G3 (Bondi Blue)"],
+      [x.processor, "PowerPC G3, 233 MHz"],
+      [x.memory,    "64 MB SDRAM"],
+      [x.serial,    "XA8352Z1JEA"],
+      [x.software,  "Mac OS X 10.5 Leopard"]
+    ];
+    for (const [name, value] of rows) {
+      const tr = makeEl("tr");
+      tr.append(makeEl("td", 0, name), makeEl("td", 0, value));
+      table.append(tr);
+    }
+    content.append(table);
+  } else {
+    byId("dt").textContent = x.aboutApp;
+    content.append(makeEl("h2", 0, x.appName), makeEl("p", 0, x.version), makeEl("p", 0, x.disclaimer));
+  }
+
+  content.append(makeButton(x.ok, "bl", closeAbout));
+  byId("dov").classList.add("on");
+}
+
+byId("apple").onclick = function () { showAbout("mac"); };   // клик на яблоко
+byId("app").onclick   = function () { showAbout("app"); };   // клик на название сайта
+byId("dx").onclick    = closeAbout;                           // красный кружок закрывает окно
+byId("dov").onclick   = function (e) { if (e.target === byId("dov")) closeAbout(); };
+
+// Клавиша Esc закрывает все окна
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") { closeAbout(); closeChoice(); }
+});
+
+
+/* ------------------------------------------------------------------
+   7. ЛЕНТА СООБЩЕНИЙ
+   ------------------------------------------------------------------ */
+function drawFeed() {
+  const x = tx();
+  const now = Date.now();
+  const feedBox = byId("feed");
+
+  // Берём только свежие записи (моложе 3 часов) и ставим новые сверху
+  const fresh = reports
+    .filter(function (r) { return r.ts + LIFETIME > now; })
+    .sort(function (a, b) { return b.ts - a.ts; });
+
+  byId("cnt").textContent = "(" + fresh.length + ")";
+  feedBox.innerHTML = "";
+  if (fresh.length === 0) feedBox.append(makeEl("li", "hint", x.empty));
+
+  for (const r of fresh) {
+    const li = makeEl("li");
+    const text = makeEl("span");
+    text.append(makeEl("b", 0, r.line + " · " + r.station), makeEl("br"), makeEl("span", "hint", r.nick));
+
+    // Сколько минут назад создана запись и сколько ей ещё жить
+    const minutesAgo  = Math.max(0, Math.round((now - r.ts) / 60000));
+    const minutesLeft = Math.max(0, Math.round((r.ts + LIFETIME - now) / 60000));
+
+    li.append(
+      makeEl("span", "tag t" + r.o, x.options[r.o] || "?"),
+      text,
+      makeEl("span", "meta", x.ago(minutesAgo) + " · " + x.left(minutesLeft))
+    );
+    feedBox.append(li);
+  }
+
+  // Заодно обновляем часы в строке меню
+  byId("clock").textContent = new Date().toLocaleString(x.locale, {
+    weekday: "short", hour: "2-digit", minute: "2-digit"
+  });
+}
+
+
+/* ------------------------------------------------------------------
+   8. СВЯЗЬ С СЕРВЕРОМ (работает на Vercel)
+   ------------------------------------------------------------------ */
+
+// Отправить запись на сервер (если передать report) или получить все записи (если без аргумента)
+async function callServer(report) {
+  const response = await fetch(
+    "/api/reports",
+    report
+      ? { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(report) }
+      : { cache: "no-store" }
+  );
+  let json = null;
+  try { json = await response.json(); } catch (e) {}
+  if (!response.ok) {
+    throw new Error(response.status + " " + ((json && json.error) || response.statusText));
+  }
+  return json;
+}
+
+// Загрузить все записи с сервера и перерисовать ленту
+async function loadReports() {
+  try {
+    reports = await callServer();
+    byId("note").textContent = "";
+    drawFeed();
+    // Если открыта схема маршрута — обновляем и её, чтобы появились новые метки
+    if (currentLine && !byId("ov").classList.contains("on")) drawPane();
+  } catch (e) {
+    byId("note").textContent = tx().dbError + " (" + e.message + ")";
+  }
+}
+
+// Сообщить серверу «я на сайте» и получить, сколько людей онлайн
+async function pingOnline() {
+  try {
+    const response = await fetch("/api/online?id=" + encodeURIComponent(myId), { cache: "no-store" });
+    const json = await response.json();
+    if (response.ok && typeof json.n === "number") {
+      onlineCount = json.n;
+      byId("on").textContent = "● " + onlineCount + " " + ONLINE_LABEL[currentLang];
+    }
+  } catch (e) {}
+}
+
+
+/* ------------------------------------------------------------------
+   9. ЗАПУСК САЙТА
+   ------------------------------------------------------------------ */
+
+// Нарисовать всё заново (после смены языка, вкладки и т. д.)
+function redrawAll() {
+  drawTopBars();
+  drawSidebar();
+  drawPane();
+  drawFeed();
+}
+
+// Выбираем, откуда брать записи
+async function start() {
+  // Пробуем подключиться к базе Claude. На Vercel её нет, поэтому будет ошибка, и это нормально.
+  let db = null;
+  try { db = await claude.use("db"); } catch (e) {}
+
+  if (db) {
+    // Сайт открыт внутри Claude: слушаем общую базу
+    claudeDb = db.collection("reports");
+    claudeDb.onSnapshot(function (snapshot) {
+      reports = snapshot.docs.map(function (d) { return Object.assign({ id: d.id }, d.data()); });
+      // Просроченные записи удаляем из базы
+      reports
+        .filter(function (r) { return r.ts + LIFETIME < Date.now(); })
+        .forEach(function (r) { claudeDb.doc(r.id).delete().catch(function () {}); });
+      drawFeed();
+      if (currentLine && !byId("ov").classList.contains("on")) drawPane();
+    }, function () {
+      byId("note").textContent = tx().dbError;
+    });
+  } else {
+    // Сайт на Vercel: общаемся с нашим сервером
+    useServer = true;
+    pingOnline();
+    setInterval(pingOnline, 20000);   // сообщаем «я здесь» каждые 20 секунд
+    await loadReports();
+    setInterval(loadReports, 15000);  // обновляем ленту каждые 15 секунд
+  }
+}
+
+redrawAll();                   // первый раз рисуем экран
+setInterval(drawFeed, 30000);  // раз в 30 секунд обновляем время «5 мин назад»
+start();                       // подключаемся к записям
+</script>
+
+</body>
+</html>
