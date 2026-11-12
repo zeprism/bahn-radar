@@ -8,9 +8,9 @@
 <!--
   ГДЕ ЧТО НАХОДИТСЯ В ЭТОМ ФАЙЛЕ
 
-  1. <style>  ... </style>  — внешний вид (цвета, кнопки, окна). Это CSS.
-  2. <body>   ... </body>   — «скелет» страницы: пустые места, куда JavaScript потом вставляет текст и кнопки.
-  3. <script> ... </script> — вся логика: языки, выбор линии, сохранение записей. Это JavaScript.
+  1. Блок style — внешний вид (цвета, кнопки, окна). Это CSS.
+  2. Блок body — «скелет» страницы: пустые места, куда JavaScript потом вставляет текст и кнопки.
+  3. Блок script внизу — вся логика: языки, выбор линии, сохранение записей. Это JavaScript.
 
   Список линий и станций лежит в ОТДЕЛЬНОМ файле lines.js (он подключается ниже).
 -->
@@ -82,8 +82,8 @@ body::before {
 }
 
 /* Яблоко и название — кликабельные */
-#apple, #app { cursor: pointer; }
-#apple:hover, #app:hover { text-decoration: underline; }
+#apple, #app, #contact { cursor: pointer; }
+#apple:hover, #app:hover, #contact:hover { text-decoration: underline; }
 
 /* Зелёная метка «● 3 онлайн» */
 #on { color: #1d7a1d; white-space: nowrap; }
@@ -369,7 +369,7 @@ label { font-weight: bold; font-size: 11px; display: block; margin-bottom: 8px; 
 .sheet .btn { display: block; width: 100%; height: 38px; margin-bottom: 10px; font-size: 14px; border-radius: 19px; }
 .sheet .btn::before { border-radius: 18px 18px 40% 40%; }
 
-/* Окна «Об этом Mac» и «О программе» */
+/* Окна «Об этом Mac», «О программе» и «Связь» */
 .dlg {
   width: min(420px, 94vw);
   border-radius: 8px;
@@ -387,6 +387,9 @@ label { font-weight: bold; font-size: 11px; display: block; margin-bottom: 8px; 
 .dbody td { padding: 2px 0; }
 .dbody td:first-child { color: #666; padding-right: 14px; text-align: right; }
 .dbody .btn { margin-top: 10px; min-width: 90px; }
+/* Ссылки на Telegram в окне «Связь» */
+.dbody a { color: #1b5fd6; font-weight: bold; text-decoration: none; }
+.dbody a:hover { text-decoration: underline; }
 
 /* Рисунок iMac G3, нарисованный только средствами CSS */
 .imac { width: 100px; height: 96px; margin: 0 auto 6px; position: relative; }
@@ -422,6 +425,7 @@ label { font-weight: bold; font-size: 11px; display: block; margin-bottom: 8px; 
   <b id="apple">&#63743;</b>   <!-- значок яблока: по клику открывается «Об этом Mac» -->
   <b id="app"></b>             <!-- название сайта: по клику открывается «О программе» -->
   <span id="mf"></span>        <!-- пункт «Файл» -->
+  <span id="contact"></span>  <!-- пункт «Связь»: по клику открывается окно с контактами -->
   <div class="lang" id="lang"></div>  <!-- кнопки RU / EN / DE -->
   <b id="uid"></b>             <!-- «Ваш номер: User12345» -->
   <b id="on"></b>              <!-- «● 3 онлайн» -->
@@ -462,7 +466,7 @@ label { font-weight: bold; font-size: 11px; display: block; margin-bottom: 8px; 
   </div>
 </div>
 
-<!-- ============ ОКНА «ОБ ЭТОМ MAC» И «О ПРОГРАММЕ» (по умолчанию скрыто) ============ -->
+<!-- ============ ОКНА «ОБ ЭТОМ MAC», «О ПРОГРАММЕ» И «СВЯЗЬ» (по умолчанию скрыто) ============ -->
 <div class="ov" id="dov" style="align-items:center">
   <div class="dlg">
     <div class="title">
@@ -486,7 +490,7 @@ label { font-weight: bold; font-size: 11px; display: block; margin-bottom: 8px; 
    3. Маленькие помощники
    4. Рисование: верхняя панель, левое меню, список линий, схема маршрута
    5. Окно выбора из 4 вариантов и сохранение записи
-   6. Окна «Об этом Mac» и «О программе»
+   6. Окна «Об этом Mac», «О программе» и «Связь»
    7. Лента сообщений
    8. Связь с сервером (загрузка записей, счётчик онлайн)
    9. Запуск сайта
@@ -521,6 +525,10 @@ const TEXTS = {
   ru: {
     appName: "Контролёры",
     fileMenu: "Файл",
+    contactMenu: "Связь",
+    contactText: "Если у вас есть пожелания, вопросы или вы заметили баги — напишите мне.",
+    contactMain: "Telegram для связи:",
+    contactBackup: "Запасной Telegram:",
     windowTitle: "Где контролёр?",
     tabS: "S-Bahn",
     tabR: "Региональные",
@@ -557,7 +565,7 @@ const TEXTS = {
     software: "Система",
     // Окно «О программе»
     aboutApp: "О программе",
-    version: "Версия 1.0",
+    version: "Версия 0.1 beta",
     disclaimer: "Автор сайта не может гарантировать правдивость того, что отметили пользователи. Записи анонимны и могут быть неточными или устаревшими.",
     ok: "OK",
     // Как показывать время: «5 мин назад» и «ещё 2 ч 55 мин»
@@ -578,6 +586,10 @@ const TEXTS = {
   en: {
     appName: "Inspectors",
     fileMenu: "File",
+    contactMenu: "Contact",
+    contactText: "If you have suggestions or questions, or you noticed a bug, write to me.",
+    contactMain: "Telegram:",
+    contactBackup: "Backup Telegram:",
     windowTitle: "Where is the inspector?",
     tabS: "S-Bahn",
     tabR: "Regional",
@@ -611,7 +623,7 @@ const TEXTS = {
     serial: "Serial Number",
     software: "Software",
     aboutApp: "About Inspectors",
-    version: "Version 1.0",
+    version: "Version 0.1 beta",
     disclaimer: "The author of this site cannot guarantee that what users report is true. Reports are anonymous and may be inaccurate or outdated.",
     ok: "OK",
     ago: function (m) {
@@ -631,6 +643,10 @@ const TEXTS = {
   de: {
     appName: "Kontrolleure",
     fileMenu: "Ablage",
+    contactMenu: "Kontakt",
+    contactText: "Wenn du Wünsche oder Fragen hast oder Fehler bemerkt hast, schreib mir.",
+    contactMain: "Telegram:",
+    contactBackup: "Zweit-Telegram:",
     windowTitle: "Wo ist der Kontrolleur?",
     tabS: "S-Bahn",
     tabR: "Regional",
@@ -664,7 +680,7 @@ const TEXTS = {
     serial: "Seriennummer",
     software: "Software",
     aboutApp: "Über Kontrolleure",
-    version: "Version 1.0",
+    version: "Version 0.1 Beta",
     disclaimer: "Der Autor dieser Seite kann nicht garantieren, dass die Angaben der Nutzer wahr sind. Meldungen sind anonym und können ungenau oder veraltet sein.",
     ok: "OK",
     ago: function (m) {
@@ -759,6 +775,7 @@ function drawTopBars() {
   const x = tx();
   byId("app").textContent = x.appName;
   byId("mf").textContent = x.fileMenu;
+  byId("contact").textContent = x.contactMenu;
   byId("wt").textContent = x.windowTitle;
   byId("uid").textContent = ID_LABEL[currentLang] + ": " + myId;
   byId("on").textContent = onlineCount == null ? "" : "● " + onlineCount + " " + ONLINE_LABEL[currentLang];
@@ -975,12 +992,23 @@ document.querySelectorAll("[data-o]").forEach(function (button) {
 
 
 /* ------------------------------------------------------------------
-   6. ОКНА «ОБ ЭТОМ MAC» И «О ПРОГРАММЕ»
+   6. ОКНА «ОБ ЭТОМ MAC», «О ПРОГРАММЕ» И «СВЯЗЬ»
    ------------------------------------------------------------------ */
+
+// Ссылка на Telegram: показывает @имя и открывает t.me/имя в новой вкладке
+function telegramLink(name) {
+  const a = makeEl("a", 0, "@" + name);
+  a.href = "https://t.me/" + name;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  return a;
+}
+
 function closeAbout() { byId("dov").classList.remove("on"); }
 
 // kind = "mac"  → окно «Об этом Mac» (iMac G3 с серийным номером)
 // kind = "app"  → окно «О программе» (версия и предупреждение)
+// kind = "contact" → окно «Связь» (контакты в Telegram)
 function showAbout(kind) {
   const x = tx();
   const content = byId("dc");
@@ -1007,6 +1035,14 @@ function showAbout(kind) {
       table.append(tr);
     }
     content.append(table);
+  } else if (kind === "contact") {
+    byId("dt").textContent = x.contactMenu;
+    content.append(makeEl("h2", 0, x.contactMenu), makeEl("p", 0, x.contactText));
+    const mainLine = makeEl("p");
+    mainLine.append(x.contactMain + " ", telegramLink("zeprism"));
+    const backupLine = makeEl("p");
+    backupLine.append(x.contactBackup + " ", telegramLink("Zumer_denis"));
+    content.append(mainLine, backupLine);
   } else {
     byId("dt").textContent = x.aboutApp;
     content.append(makeEl("h2", 0, x.appName), makeEl("p", 0, x.version), makeEl("p", 0, x.disclaimer));
@@ -1018,6 +1054,7 @@ function showAbout(kind) {
 
 byId("apple").onclick = function () { showAbout("mac"); };   // клик на яблоко
 byId("app").onclick   = function () { showAbout("app"); };   // клик на название сайта
+byId("contact").onclick = function () { showAbout("contact"); }; // клик на «Связь»
 byId("dx").onclick    = closeAbout;                           // красный кружок закрывает окно
 byId("dov").onclick   = function (e) { if (e.target === byId("dov")) closeAbout(); };
 
