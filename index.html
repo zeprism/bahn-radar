@@ -476,10 +476,238 @@ body.theme-golden .sheet, body.theme-golden .dlg {
   background: #f7f8f8ed; backdrop-filter: blur(24px);
   border: 1px solid #ffffffc4; border-radius: 16px;
 }
-#theme-toggle { position: absolute; right: 12px; z-index: 2; height: 23px; padding: 0 10px; font-size: 10px; white-space: nowrap; }
-body.theme-golden #theme-toggle { height: 26px; }
+/* Дополнительные слои бликов и преломления для более выраженного Liquid Glass */
+body.theme-golden { background-attachment: fixed; }
+body.theme-golden .menubar {
+  background: linear-gradient(180deg, #ffffffd9, #f6f3ed9c 58%, #e9e5df99);
+  backdrop-filter: blur(30px) saturate(1.8); -webkit-backdrop-filter: blur(30px) saturate(1.8);
+  box-shadow: 0 1px 0 #ffffffb8 inset, 0 6px 22px #18202a24;
+}
+body.theme-golden .win, body.theme-golden .box {
+  background: linear-gradient(145deg, #ffffffb8, #f4f7f8a1 42%, #e9edf1b8);
+  backdrop-filter: blur(36px) saturate(1.65); -webkit-backdrop-filter: blur(36px) saturate(1.65);
+  border-color: #ffffffd1;
+  box-shadow: 0 28px 80px #17202a4a, 0 2px 8px #17202a1c,
+    inset 0 1px 0 #ffffff, inset 1px 0 0 #ffffff80, inset -1px 0 0 #ffffff55;
+}
+body.theme-golden .title {
+  background: linear-gradient(180deg, #ffffffde, #ffffff91 52%, #e8ebef9c);
+  border-bottom-color: #ffffffa8; box-shadow: inset 0 1px #fff;
+}
+body.theme-golden .win > .title span { padding: 0 130px; }
+body.theme-golden .tabs {
+  background: linear-gradient(180deg, #ffffff7a, #dce2e9a3);
+  backdrop-filter: blur(24px) saturate(1.5); -webkit-backdrop-filter: blur(24px) saturate(1.5);
+}
+body.theme-golden .side {
+  background: linear-gradient(110deg, #eef4f8b5, #dce5ed8f);
+  backdrop-filter: blur(28px) saturate(1.4); -webkit-backdrop-filter: blur(28px) saturate(1.4);
+}
+body.theme-golden .pane { background: #ffffff52; }
+body.theme-golden .lrow {
+  position: relative; overflow: hidden;
+  background: linear-gradient(145deg, #ffffffc9, #f3f6f8a3 56%, #e8edf1b5);
+  backdrop-filter: blur(18px) saturate(1.5); -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  border-color: #ffffffd1;
+  box-shadow: 0 6px 16px #1b2b3d1c, inset 0 1px #fff, inset 0 -1px #ffffff80;
+}
+body.theme-golden .lrow::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(115deg, #ffffff74, transparent 38%, transparent 72%, #ffffff30);
+}
+body.theme-golden .btn {
+  isolation: isolate; overflow: hidden;
+  border: 1px solid #ffffffa6; border-radius: 999px;
+  background: linear-gradient(180deg, #ffffffbd, #ffffff64 48%, #d9e2eb91);
+  color: #263441; text-shadow: 0 1px #ffffffb8;
+  box-shadow: 0 5px 12px #18202a24, inset 0 1px #fff, inset 0 -1px #ffffff60;
+  backdrop-filter: blur(16px) saturate(1.6); -webkit-backdrop-filter: blur(16px) saturate(1.6);
+}
+body.theme-golden .btn::before {
+  z-index: 0; top: 0; height: 64%; border-radius: inherit; opacity: .75;
+  background: linear-gradient(180deg, #ffffffd9, #ffffff30 82%, transparent);
+}
+body.theme-golden .btn.gr {
+  color: #143e31; background: linear-gradient(180deg, #e6fff0c9, #8bd7b49c 50%, #3eaa7c9c);
+}
+body.theme-golden .btn.rd {
+  color: #542522; background: linear-gradient(180deg, #fff0e9ce, #f3a58d9e 52%, #d66c5f9e);
+}
+body.theme-golden .btn.bl {
+  color: #203954; background: linear-gradient(180deg, #eff8ffce, #9dc9ed9e 52%, #628fbe9e);
+}
+body.theme-golden .btn.or {
+  color: #563817; background: linear-gradient(180deg, #fff7e4d4, #f1ca82a3 52%, #d89b4fa3);
+}
+body.theme-golden .btn.gy {
+  background: linear-gradient(180deg, #ffffffd9, #edf1f4a3 54%, #d9e0e7a8);
+  border-color: #ffffffd1; color: #26323d;
+}
+body.theme-golden .btn:hover {
+  filter: brightness(1.06) saturate(1.12);
+  box-shadow: 0 7px 16px #18202a30, inset 0 1px #fff;
+}
+body.theme-golden .sheet, body.theme-golden .dlg {
+  background: linear-gradient(145deg, #ffffffdb, #f0f4f7c9);
+  backdrop-filter: blur(34px) saturate(1.7); -webkit-backdrop-filter: blur(34px) saturate(1.7);
+  border-color: #ffffffeb; box-shadow: 0 24px 70px #111b2c52, inset 0 1px #fff;
+}
+body.theme-golden #feed li:nth-child(even) { background: #dfeaf486; }
+#theme-toggle, #mode-toggle {
+  position: absolute; z-index: 2; height: 23px; padding: 0 9px;
+  font-size: 10px; white-space: nowrap;
+}
+#theme-toggle { right: 12px; }
+#mode-toggle { right: 112px; }
+body.theme-golden #theme-toggle, body.theme-golden #mode-toggle { height: 26px; }
+body.theme-golden #theme-toggle, body.theme-golden #mode-toggle {
+  background: linear-gradient(180deg, #ffffffb8, #eef2f47d 54%, #d9e1e98c);
+  backdrop-filter: blur(18px) saturate(1.65); -webkit-backdrop-filter: blur(18px) saturate(1.65);
+}
+/* Системный тёмный режим, отдельный от выбранного скина */
+body.mode-dark {
+  color: #f2f4f7;
+  background:
+    radial-gradient(ellipse 48% 38% at 5% 10%, #253d5c, transparent 72%),
+    radial-gradient(ellipse 55% 42% at 100% 6%, #533c45, transparent 70%),
+    radial-gradient(ellipse 65% 48% at 72% 100%, #3d344a, transparent 72%),
+    linear-gradient(145deg, #101820, #222936 52%, #171722);
+}
+body.mode-dark:not(.theme-golden)::before { display: none; }
+body.mode-dark:not(.theme-golden) .menubar,
+body.mode-dark:not(.theme-golden) .title,
+body.mode-dark:not(.theme-golden) .tabs {
+  color: #f2f4f7; background: linear-gradient(180deg, #41464dd9, #252a31d9);
+  border-color: #ffffff30; box-shadow: inset 0 1px #ffffff24, 0 4px 20px #0005;
+}
+body.mode-dark:not(.theme-golden) .win,
+body.mode-dark:not(.theme-golden) .box,
+body.mode-dark:not(.theme-golden) .sheet,
+body.mode-dark:not(.theme-golden) .dlg {
+  color: #f2f4f7; background: linear-gradient(145deg, #363c45ed, #242a33ed);
+  border-color: #ffffff38; box-shadow: 0 24px 70px #0009, inset 0 1px #ffffff24;
+}
+body.mode-dark:not(.theme-golden) .side { background: #252c36ed; border-color: #ffffff2a; }
+body.mode-dark:not(.theme-golden) .side h4,
+body.mode-dark:not(.theme-golden) .hint,
+body.mode-dark:not(.theme-golden) .sub,
+body.mode-dark:not(.theme-golden) .meta { color: #b9c1cc; }
+body.mode-dark:not(.theme-golden) .side button { color: #f2f4f7; }
+body.mode-dark:not(.theme-golden) .pane { color: #f2f4f7; background: repeating-linear-gradient(#2e343d 0 2px, #292f38 2px 4px); }
+body.mode-dark:not(.theme-golden) .lrow { color: #f2f4f7; background: linear-gradient(#454b54, #30363f); border-color: #ffffff36; }
+body.mode-dark:not(.theme-golden) #feed li { border-color: #ffffff24; }
+body.mode-dark:not(.theme-golden) #feed li:nth-child(even) { background: #ffffff0b; }
+body.mode-dark:not(.theme-golden) input { color: #f2f4f7; background: #1c222a; border-color: #ffffff40; }
+body.mode-dark:not(.theme-golden) .btn.gy { color: #edf1f5; background: linear-gradient(#5a6069, #3a414a); border-color: #ffffff40; text-shadow: 0 1px #0008; }
+body.mode-dark.theme-golden {
+  color: #f4f5f7;
+  background:
+    radial-gradient(ellipse 45% 35% at 8% 10%, #66533d, transparent 72%),
+    radial-gradient(ellipse 52% 42% at 100% 4%, #543c48, transparent 70%),
+    radial-gradient(ellipse 65% 50% at 70% 100%, #353746, transparent 72%),
+    linear-gradient(145deg, #10171d, #292a30 52%, #17171f);
+  background-attachment: fixed;
+}
+body.mode-dark.theme-golden .menubar {
+  color: #f4f5f7; background: linear-gradient(180deg, #2c3035d9, #191c20c9 58%, #24262ab8);
+  border-color: #ffffff32; box-shadow: inset 0 1px #ffffff25, 0 6px 24px #0008;
+}
+body.mode-dark.theme-golden .win, body.mode-dark.theme-golden .box,
+body.mode-dark.theme-golden .sheet, body.mode-dark.theme-golden .dlg {
+  color: #f4f5f7; background: linear-gradient(145deg, #3a3d43d9, #22262bd1 56%, #171a20d9);
+  border-color: #ffffff55; box-shadow: 0 28px 80px #0009, inset 0 1px #ffffff42, inset 1px 0 #ffffff20;
+}
+body.mode-dark.theme-golden .title,
+body.mode-dark.theme-golden .tabs {
+  color: #f4f5f7; background: linear-gradient(180deg, #ffffff24, #ffffff0a 55%, #00000024);
+  border-color: #ffffff30;
+}
+body.mode-dark.theme-golden .side { background: linear-gradient(110deg, #242a32c9, #191f27b8); border-color: #ffffff30; }
+body.mode-dark.theme-golden .pane { color: #f4f5f7; background: #141a20a8; }
+body.mode-dark.theme-golden .side button { color: #f4f5f7; }
+body.mode-dark.theme-golden .side h4,
+body.mode-dark.theme-golden .hint,
+body.mode-dark.theme-golden .sub,
+body.mode-dark.theme-golden .meta { color: #c0c6ce; }
+body.mode-dark.theme-golden .lrow {
+  color: #f4f5f7; background: linear-gradient(145deg, #ffffff29, #ffffff0f 54%, #00000028);
+  border-color: #ffffff4d; box-shadow: 0 6px 18px #0005, inset 0 1px #ffffff40, inset 0 -1px #ffffff14;
+}
+body.mode-dark.theme-golden .lrow:hover { background: linear-gradient(145deg, #ffffff40, #ffffff18); }
+body.mode-dark.theme-golden .btn { color: #f4f5f7; text-shadow: 0 1px 2px #0008; border-color: #ffffff68; }
+body.mode-dark.theme-golden .btn.gr { background: linear-gradient(180deg, #92d8b04c, #4aac7b36 52%, #267b594f); }
+body.mode-dark.theme-golden .btn.rd { background: linear-gradient(180deg, #f1a2974c, #d76b6336 52%, #a53f434f); }
+body.mode-dark.theme-golden .btn.bl { background: linear-gradient(180deg, #a9d1f04c, #679dd336 52%, #3c6d9c4f); }
+body.mode-dark.theme-golden .btn.or { background: linear-gradient(180deg, #f2cd8c4c, #d99e5036 52%, #9e69344f); }
+body.mode-dark.theme-golden .btn.gy,
+body.mode-dark.theme-golden #theme-toggle,
+body.mode-dark.theme-golden #mode-toggle {
+  color: #f4f5f7; background: linear-gradient(180deg, #ffffff3d, #ffffff17 50%, #00000030);
+  border-color: #ffffff5c; box-shadow: 0 4px 14px #0006, inset 0 1px #ffffff5c;
+}
+body.mode-dark.theme-golden #feed li { border-color: #ffffff22; }
+body.mode-dark.theme-golden #feed li:nth-child(even) { background: #ffffff0c; }
+body.mode-dark.theme-golden input { color: #f4f5f7; background: #11171db8; border-color: #ffffff40; }
+/* Более насыщенные цвета у вкладок S-Bahn и Regional */
+body.theme-golden .tabs .btn.tab-s {
+  color: #fff; text-shadow: 0 1px 2px #13512f99;
+  background: linear-gradient(180deg, #9af0b8e8, #36bf70e8 52%, #168c51ed);
+  border-color: #d1ffe0; box-shadow: 0 5px 14px #167e4c52, inset 0 1px #ffffffed, inset 0 -2px #08774166;
+}
+body.theme-golden .tabs .btn.tab-r {
+  color: #fff; text-shadow: 0 1px 2px #71332299;
+  background: linear-gradient(180deg, #ffd18ae8, #f08b3ee8 52%, #d95a38ed);
+  border-color: #ffe4c2; box-shadow: 0 5px 14px #bc583c52, inset 0 1px #ffffffed, inset 0 -2px #a53e2d66;
+}
+body.theme-golden .tabs .btn.tab-s.gy {
+  color: #17683e; text-shadow: 0 1px #ffffffc9;
+  background: linear-gradient(180deg, #eaffefed, #b7efcae8 52%, #83dba6ed);
+  border-color: #f2fff5; box-shadow: 0 4px 11px #167e4c30, inset 0 1px #fff;
+}
+body.theme-golden .tabs .btn.tab-r.gy {
+  color: #8b4729; text-shadow: 0 1px #ffffffc9;
+  background: linear-gradient(180deg, #fff5e6ed, #ffd7a9e8 52%, #f2ad75ed);
+  border-color: #fff8eb; box-shadow: 0 4px 11px #bc583c30, inset 0 1px #fff;
+}
+body.mode-dark.theme-golden .tabs .btn.tab-s {
+  color: #effff4; text-shadow: 0 1px 2px #002b16;
+  background: linear-gradient(180deg, #67df9e9c, #1ba85f9c 52%, #087843b8);
+  border-color: #aaffca; box-shadow: 0 0 20px #26c87555, inset 0 1px #ffffffa8;
+}
+body.mode-dark.theme-golden .tabs .btn.tab-r {
+  color: #fff7f1; text-shadow: 0 1px 2px #3b1008;
+  background: linear-gradient(180deg, #ffb66c9c, #ef713b9c 52%, #c63d31b8);
+  border-color: #ffd2a4; box-shadow: 0 0 20px #f16d4755, inset 0 1px #ffffffa8;
+}
+body.mode-dark.theme-golden .tabs .btn.tab-s.gy {
+  color: #c5f7d8; background: linear-gradient(180deg, #43ab705c, #1673455c);
+  border-color: #70d69b88; box-shadow: 0 0 12px #26c87526, inset 0 1px #ffffff80;
+}
+body.mode-dark.theme-golden .tabs .btn.tab-r.gy {
+  color: #ffdec2; background: linear-gradient(180deg, #cc714e5c, #8f3f365c);
+  border-color: #eb9b7588; box-shadow: 0 0 12px #f16d4726, inset 0 1px #ffffff80;
+}
+body.theme-golden .lrow .btn.gr {
+  color: #fff; text-shadow: 0 1px 2px #064c29a8;
+  background: linear-gradient(180deg, #8cf0a9, #21b85e 52%, #087e43);
+  border-color: #c8ffd6; box-shadow: 0 4px 12px #087e435c, inset 0 1px #ffffffed, inset 0 -2px #075c3580;
+}
+body.theme-golden .lrow .btn.rd {
+  color: #fff; text-shadow: 0 1px 2px #681a17a8;
+  background: linear-gradient(180deg, #ff9c83, #e6483e 52%, #b92332);
+  border-color: #ffd0c4; box-shadow: 0 4px 12px #b923325c, inset 0 1px #ffffffed, inset 0 -2px #801c2a80;
+}
+body.mode-dark.theme-golden .lrow .btn.gr {
+  color: #effff4; background: linear-gradient(180deg, #62e697b8, #16a958b8 52%, #087543d1);
+  border-color: #a6ffc5; box-shadow: 0 0 18px #22d27666, inset 0 1px #ffffffc9;
+}
+body.mode-dark.theme-golden .lrow .btn.rd {
+  color: #fff4f1; background: linear-gradient(180deg, #ff8979b8, #df3c43b8 52%, #a91c35d1);
+  border-color: #ffc1b7; box-shadow: 0 0 18px #f34c5d66, inset 0 1px #ffffffc9;
+}
 @media (max-width: 620px) {
-  #theme-toggle { right: 8px; max-width: 112px; overflow: hidden; }
+  #theme-toggle { right: 8px; max-width: 98px; overflow: hidden; }
+  #mode-toggle { right: 110px; max-width: 86px; overflow: hidden; }
   body.theme-golden .menubar { gap: 8px; padding: 0 9px; }
 }
 </style>
@@ -505,6 +733,7 @@ body.theme-golden #theme-toggle { height: 26px; }
   <div class="title">
     <i class="dot d1"></i><i class="dot d2"></i><i class="dot d3"></i>
     <span id="wt"></span>        <!-- заголовок окна -->
+    <button class="btn gy" id="mode-toggle" type="button"></button>
     <button class="btn gy" id="theme-toggle" type="button" aria-label="Switch website theme"></button>
   </div>
   <div class="tabs" id="tabs"></div>   <!-- вкладки «S-Bahn» и «Региональные» -->
@@ -650,7 +879,9 @@ const TEXTS = {
     },
     locale: "ru-RU",
     themeGolden: "Golden Gate",
-    themeDefault: "Leopard"
+    themeDefault: "Leopard",
+    modeLight: "Светлая",
+    modeDark: "Тёмная"
   },
 
   // ---------- ENGLISH ----------
@@ -709,7 +940,9 @@ const TEXTS = {
     },
     locale: "en-GB",
     themeGolden: "Golden Gate",
-    themeDefault: "Leopard"
+    themeDefault: "Leopard",
+    modeLight: "Light",
+    modeDark: "Dark"
   },
 
   // ---------- DEUTSCH ----------
@@ -768,7 +1001,9 @@ const TEXTS = {
     },
     locale: "de-DE",
     themeGolden: "Golden Gate",
-    themeDefault: "Leopard"
+    themeDefault: "Leopard",
+    modeLight: "Hell",
+    modeDark: "Dunkel"
   }
 };
 
@@ -831,6 +1066,11 @@ try {
   currentTheme = localStorage.getItem("siteTheme") === "golden" ? "golden" : "default";
 } catch (e) {}
 document.body.classList.toggle("theme-golden", currentTheme === "golden");
+let currentMode = "light";
+try {
+  currentMode = localStorage.getItem("siteMode") === "dark" ? "dark" : "light";
+} catch (e) {}
+document.body.classList.toggle("mode-dark", currentMode === "dark");
 
 // Текущее состояние: что сейчас выбрано на экране
 let currentTab = "S";     // "S" = вкладка S-Bahn, "R" = вкладка «Региональные»
@@ -864,6 +1104,16 @@ function drawTopBars() {
     try { localStorage.setItem("siteTheme", currentTheme); } catch (e) {}
     drawTopBars();
   };
+  const modeButton = byId("mode-toggle");
+  modeButton.textContent = currentMode === "dark" ? "☼" : "☾";
+  modeButton.setAttribute("aria-label", currentMode === "dark" ? x.modeLight : x.modeDark);
+  modeButton.setAttribute("title", currentMode === "dark" ? x.modeLight : x.modeDark);
+  modeButton.onclick = function () {
+    currentMode = currentMode === "dark" ? "light" : "dark";
+    document.body.classList.toggle("mode-dark", currentMode === "dark");
+    try { localStorage.setItem("siteMode", currentMode); } catch (e) {}
+    drawTopBars();
+  };
   byId("app").textContent = x.appName;
   byId("mf").textContent = x.fileMenu;
   byId("contact").textContent = x.contactMenu;
@@ -885,14 +1135,15 @@ function drawTopBars() {
   // Две вкладки: S-Bahn (зелёная) и Региональные (красная)
   const tabsBox = byId("tabs");
   tabsBox.innerHTML = "";
-  tabsBox.append(
-    makeButton(x.tabS, currentTab === "S" ? "gr" : "gy", function () {
+  const sTab = makeButton(x.tabS, currentTab === "S" ? "gr" : "gy", function () {
       currentTab = "S"; currentArea = "Berlin"; currentLine = null; redrawAll();
-    }),
-    makeButton(x.tabR, currentTab === "R" ? "rd" : "gy", function () {
+    });
+  sTab.classList.add("tab-s");
+  const rTab = makeButton(x.tabR, currentTab === "R" ? "rd" : "gy", function () {
       currentTab = "R"; currentArea = "ALL"; currentLine = null; redrawAll();
-    })
-  );
+    });
+  rTab.classList.add("tab-r");
+  tabsBox.append(sTab, rTab);
 
   // Подписи на четырёх кнопках выбора и на кнопке «Отмена»
   document.querySelectorAll("[data-o]").forEach(function (button) {
