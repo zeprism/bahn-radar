@@ -1555,6 +1555,12 @@ function formatNoticeDate(date, time) {
   return parsed.toLocaleString(tx().locale, { dateStyle: "medium", timeStyle: "short" });
 }
 
+function localizedNoticeText(value) {
+  if (typeof value === "string") return value;
+  if (!value || typeof value !== "object") return "";
+  return value[currentLang] || value.en || value.de || value.ru || "";
+}
+
 function noticeExpiry(item) {
   if (!item || !item.end) return null;
   const end = String(item.end);
@@ -1638,9 +1644,11 @@ function drawImportantInfo(pane, x) {
     const title = makeEl("h4");
     const lines = item.lines || [];
     for (const line of lines) title.append(makeEl("span", "notice-line", line));
-    if (item.headline) title.append(document.createTextNode(item.headline));
+    const headline = localizedNoticeText(item.headline);
+    if (headline) title.append(document.createTextNode(headline));
     card.append(title);
-    if (item.text) card.append(makeEl("p", 0, item.text));
+    const description = localizedNoticeText(item.text);
+    if (description) card.append(makeEl("p", 0, description));
     if (item.start || item.end) {
       const period = [formatNoticeDate(item.start, item.startTime), formatNoticeDate(item.end, item.endTime)].filter(Boolean).join(" — ");
       if (period) card.append(makeEl("p", "hint", x.infoPeriod + ": " + period));
