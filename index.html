@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Контролёры DE</title>
+<title>Bahn-Radar</title>
 
 <!--
   ГДЕ ЧТО НАХОДИТСЯ В ЭТОМ ФАЙЛЕ
@@ -81,9 +81,9 @@ body::before {
   box-shadow: 0 1px 5px #0007;
 }
 
-/* Яблоко и название — кликабельные */
-#apple, #app, #contact { cursor: pointer; }
-#apple:hover, #app:hover, #contact:hover { text-decoration: underline; }
+/* Название сайта и связь — кликабельные */
+#app, #contact { cursor: pointer; }
+#app:hover, #contact:hover { text-decoration: underline; }
 
 /* Зелёная метка «● 3 онлайн» */
 #on { color: #1d7a1d; white-space: nowrap; }
@@ -369,7 +369,7 @@ label { font-weight: bold; font-size: 11px; display: block; margin-bottom: 8px; 
 .sheet .btn { display: block; width: 100%; height: 38px; margin-bottom: 10px; font-size: 14px; border-radius: 19px; }
 .sheet .btn::before { border-radius: 18px 18px 40% 40%; }
 
-/* Окна «Об этом Mac», «О программе» и «Связь» */
+/* Окна «О программе» и «Связь» */
 .dlg {
   width: min(420px, 94vw);
   border-radius: 8px;
@@ -390,30 +390,6 @@ label { font-weight: bold; font-size: 11px; display: block; margin-bottom: 8px; 
 /* Ссылки на Telegram в окне «Связь» */
 .dbody a { color: #1b5fd6; font-weight: bold; text-decoration: none; }
 .dbody a:hover { text-decoration: underline; }
-
-/* Рисунок iMac G3, нарисованный только средствами CSS */
-.imac { width: 100px; height: 96px; margin: 0 auto 6px; position: relative; }
-.imac::before { /* корпус */
-  content: "";
-  position: absolute; left: 0; right: 0; top: 0; height: 78px;
-  border-radius: 46% 46% 40% 40% / 54% 54% 40% 40%;
-  background: radial-gradient(circle at 38% 28%, #9ef0f8, #2aa7c8 60%, #18738f);
-  box-shadow: inset 0 -5px 9px #0005, 0 3px 7px #0004;
-}
-.imac::after { /* экран */
-  content: "";
-  position: absolute; left: 19px; right: 19px; top: 13px; height: 48px;
-  border-radius: 9px;
-  background: radial-gradient(circle at 40% 30%, #c8ecff, #3a7ea8 70%);
-  border: 3px solid #d8f4f8;
-  box-shadow: inset 0 0 7px #000a;
-}
-.imac i { /* подставка */
-  position: absolute; left: 30px; right: 30px; bottom: 0; height: 16px;
-  border-radius: 0 0 9px 9px;
-  background: linear-gradient(#eaf7fa, #9bd4e0);
-  box-shadow: 0 2px 4px #0004;
-}
 
 /* Вторая тема: macOS 27 Golden Gate */
 body.theme-golden {
@@ -710,6 +686,237 @@ body.mode-dark.theme-golden .lrow .btn.rd {
   #mode-toggle { right: 110px; max-width: 86px; overflow: hidden; }
   body.theme-golden .menubar { gap: 8px; padding: 0 9px; }
 }
+
+/* Новая стартовая оболочка: спокойные панели, две прежние обои остаются переключаемыми. */
+body.minimal { background-attachment: fixed; }
+body.minimal::before { opacity: .28; }
+body.minimal .menubar {
+  height: 42px; gap: 16px; padding: 0 max(16px, calc((100vw - 1040px) / 2));
+  color: #f7f8fa; background: #101820a8; border: 0; box-shadow: 0 5px 24px #0003;
+  backdrop-filter: blur(18px) saturate(1.25); -webkit-backdrop-filter: blur(18px) saturate(1.25);
+}
+body.minimal #app { font-weight: 700; letter-spacing: .02em; }
+body.minimal #contact { opacity: .82; }
+body.minimal #mf, body.minimal #uid, body.minimal #on, body.minimal #clock { display: none; }
+body.minimal .win, body.minimal .box {
+  max-width: 1040px; border: 1px solid #ffffff78; border-radius: 18px;
+  background: #f8fafce8; box-shadow: 0 24px 72px #08111d52, inset 0 1px #fff;
+  backdrop-filter: blur(22px) saturate(1.15); -webkit-backdrop-filter: blur(22px) saturate(1.15);
+}
+body.minimal .win { margin-top: 28px; }
+body.minimal .title {
+  height: 54px; padding: 0 18px; background: transparent; border: 0;
+}
+body.minimal .title .dot { display: none; }
+body.minimal .dlg .title #dx { display: block; z-index: 1; cursor: pointer; }
+body.minimal .win > .title span {
+  position: static; width: auto; margin-right: auto; text-align: left;
+  font-size: 16px; text-shadow: none; pointer-events: auto;
+}
+body.minimal .tabs {
+  justify-content: flex-start; gap: 8px; padding: 0 18px 14px;
+  background: transparent; border: 0;
+}
+body.minimal .tabs .btn {
+  min-width: 0; height: 34px; padding: 0 16px; border-radius: 999px;
+  color: #334155; background: #e8edf2; border: 1px solid #d9e0e7; box-shadow: none;
+  text-shadow: none; font-size: 12px;
+}
+body.minimal .tabs .btn::before { display: none; }
+body.minimal .tabs .btn.gr, body.minimal .tabs .btn.rd, body.minimal .tabs .btn.bl {
+  color: #fff; background: #263f58; border-color: #263f58; box-shadow: 0 3px 9px #263f5826;
+}
+body.minimal .main { min-height: 440px; border-top: 1px solid #e2e7ec; }
+body.minimal .side {
+  flex-basis: 210px; padding: 14px 8px; background: #f0f3f6c9; border-color: #e0e5e9;
+}
+body.minimal .side h4 { margin: 8px 10px; color: #7a8794; font-size: 10px; letter-spacing: .08em; }
+body.minimal .side button { padding: 8px 12px; border-radius: 8px; color: #293443; }
+body.minimal .side button.on { margin: 0 4px; width: calc(100% - 8px); background: #dce8f4; color: #174876; text-shadow: none; box-shadow: inset 0 0 0 1px #c2d5e8; }
+body.minimal .pane { padding: 22px; background: #fbfcfdc9; }
+body.minimal h3 { font-size: 15px; text-shadow: none; }
+body.minimal .hint, body.minimal .sub, body.minimal .meta { color: #687582; }
+body.minimal .lrow {
+  padding: 10px 12px; border-radius: 10px; border-color: #e0e5e9;
+  background: #fff; box-shadow: 0 2px 7px #1020300b;
+}
+body.minimal .lrow:hover { background: #f4f8fb; }
+body.minimal .btn:not(.tab-s):not(.tab-r):not(.tab-info) {
+  border-radius: 8px; box-shadow: none; text-shadow: none;
+}
+body.minimal .btn:not(.tab-s):not(.tab-r):not(.tab-info)::before { display: none; }
+body.minimal .btn.gy { color: #334155; background: #edf1f4; border-color: #d6dde4; }
+body.minimal #feed li { border-color: #e5e9ed; }
+body.minimal #feed li:nth-child(even) { background: #f5f8fb; }
+body.minimal .box { padding: 18px; }
+body.minimal .main.info-mode { min-height: 0; }
+body.minimal .main.info-mode .side { display: none; }
+body.minimal .main.info-mode .pane { width: 100%; }
+.info-intro { display: flex; align-items: flex-start; gap: 16px; justify-content: space-between; }
+.info-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 16px; }
+.notice-list { display: grid; gap: 10px; }
+.notice-card {
+  padding: 14px 16px; border: 1px solid #dce3e9; border-radius: 11px;
+  background: #fff; box-shadow: 0 2px 7px #1020300a;
+}
+.notice-card h4 { margin: 0 0 6px; font-size: 13px; }
+.notice-card p { margin: 5px 0; }
+.notice-line { display: inline-block; margin-right: 7px; color: #173f5f; font-weight: 700; }
+.notice-source { display: inline-block; margin-top: 8px; color: #1b5fd6; font-size: 11px; font-weight: 700; text-decoration: none; }
+.notice-source:hover { text-decoration: underline; }
+.info-state { padding: 13px 15px; border: 1px solid #dce3e9; border-radius: 10px; background: #f5f8fb; }
+.info-state p { margin: 5px 0; }
+body.mode-dark.minimal .menubar { color: #f3f5f7; background: #101820d0; }
+body.mode-dark.minimal .win, body.mode-dark.minimal .box { color: #edf1f5; background: #202832ec; border-color: #ffffff2c; }
+body.mode-dark.minimal .title, body.mode-dark.minimal .tabs { background: transparent; }
+body.mode-dark.minimal .tabs .btn { color: #e3e8ec; background: #343e48; border-color: #49545f; }
+body.mode-dark.minimal .tabs .btn.gr, body.mode-dark.minimal .tabs .btn.rd, body.mode-dark.minimal .tabs .btn.bl { background: #41678a; border-color: #6390b5; }
+body.mode-dark.minimal .side { background: #19212a; border-color: #39434d; }
+body.mode-dark.minimal .side button { color: #ecf0f3; }
+body.mode-dark.minimal .side button.on { color: #dceeff; background: #31475c; box-shadow: inset 0 0 0 1px #49657e; }
+body.mode-dark.minimal .pane { color: #edf1f5; background: #222b35df; }
+body.mode-dark.minimal .hint, body.mode-dark.minimal .sub, body.mode-dark.minimal .meta { color: #abb7c2; }
+body.mode-dark.minimal .lrow, body.mode-dark.minimal .notice-card { color: #edf1f5; background: #2d3742; border-color: #48545f; }
+body.mode-dark.minimal .lrow:hover { background: #35424f; }
+body.mode-dark.minimal .btn.gy { color: #e6ebf0; background: #36414c; border-color: #53606b; }
+body.mode-dark.minimal .info-state { background: #2b3540; border-color: #46525e; }
+body.mode-dark.minimal #feed li:nth-child(even) { background: #ffffff08; }
+@media (max-width: 620px) {
+  body.minimal .menubar { gap: 10px; padding: 0 12px; }
+  body.minimal .win { margin: 12px 8px; }
+  body.minimal .box { margin: 0 8px 14px; }
+  body.minimal .title { height: 58px; padding: 0 12px; }
+  body.minimal .win > .title span { max-width: 40%; }
+  body.minimal .main { min-height: 0; }
+  body.minimal .pane { padding: 16px 13px; }
+  body.minimal .info-intro { display: block; }
+}
+
+/* Новый минималистичный стиль по умолчанию. */
+.apple-mark { display: none; flex: none; width: 14px; height: 16px; fill: currentColor; }
+body.theme-leopard .apple-mark { display: block; }
+body.minimal {
+  color: #171717; background: #eef0f2; background-attachment: fixed;
+}
+body.minimal::before { display: none; }
+body.minimal .menubar {
+  height: 42px; padding: 0 max(16px, calc((100vw - 1040px) / 2)); gap: 14px;
+  color: #111; background: #fff; border: 1px solid #000; border-top: 0; box-shadow: none;
+}
+body.minimal .win, body.minimal .box, body.minimal .sheet, body.minimal .dlg {
+  color: #111; background: #fff; border: 1px solid #000; border-radius: 5px;
+  box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+body.minimal .win { max-width: 1040px; margin-top: 24px; }
+body.minimal .title {
+  height: 50px; padding: 0 16px; background: #e8e8e8; border: 1px solid #000;
+}
+body.minimal .title .dot { display: none; }
+body.minimal .win > .title span {
+  position: static; width: auto; margin-right: auto; text-align: left;
+  font-size: 16px; text-shadow: none; pointer-events: auto;
+}
+body.minimal .tabs { justify-content: flex-start; gap: 8px; background: #f1f1f1; border: 1px solid #000; }
+body.minimal .tabs .btn {
+  min-width: 0; height: 34px; padding: 0 15px; border-radius: 4px;
+  color: #111; background: #f6f6f6; border: 1px solid #000;
+  box-shadow: none; text-shadow: none; font-size: 12px;
+}
+body.minimal .tabs .btn::before { display: none; }
+body.minimal .main { min-height: 430px; border: 1px solid #000; }
+body.minimal .side { flex-basis: 210px; padding: 12px 8px; background: #ededed; border-color: #000; }
+body.minimal .side h4 { margin: 8px 10px; color: #444; font-size: 10px; letter-spacing: .08em; }
+body.minimal .side button {
+  width: calc(100% - 4px); margin: 2px; padding: 7px 10px; border: 1px solid #000;
+  border-radius: 3px; color: #111;
+}
+body.minimal .side button.on { background: #d9d9d9; color: #111; text-shadow: none; box-shadow: none; }
+body.minimal .pane { padding: 20px; background: #fff; }
+body.minimal h3 { font-size: 15px; text-shadow: none; }
+body.minimal .hint, body.minimal .sub, body.minimal .meta { color: #505050; }
+body.minimal .lrow {
+  padding: 10px 12px; border: 1px solid #000; border-radius: 5px;
+  background: #fff; box-shadow: none;
+}
+body.minimal .lrow:hover { background: #f4f4f4; }
+body.minimal .btn, body.minimal input {
+  color: #111; background: #f2f2f2; background-image: none;
+  border: 1px solid #000; border-radius: 4px; box-shadow: none; text-shadow: none;
+}
+body.minimal .btn::before { display: none; }
+body.minimal .btn:hover { filter: none; background-color: #e5e5e5; }
+body.minimal .btn.gy { color: #111; background: #f2f2f2; border-color: #000; }
+body.minimal .lrow .btn.gr, body.minimal .lrow .btn.rd {
+  background-size: 200% 100%; background-position: 0 50%;
+  transition: background-position 500ms ease, transform 200ms ease;
+}
+body.minimal .lrow .btn.gr {
+  color: #111; background-image: linear-gradient(110deg, #a8e600 0%, #fff 100%);
+}
+body.minimal .lrow .btn.rd {
+  color: #111; background-image: linear-gradient(110deg, #e53935 0%, #fff 100%);
+}
+body.minimal .lrow:hover .btn.gr, body.minimal .lrow:hover .btn.rd,
+body.minimal .lrow .btn.gr:hover, body.minimal .lrow .btn.rd:hover {
+  background-position: 100% 50%; transform: translateY(-1px);
+}
+body.minimal .st { border: 1px solid #000; border-radius: 3px; padding-left: 4px; }
+body.minimal .pt { border: 2px solid #000; background: #fff; box-shadow: none; }
+body.minimal .tag { border: 1px solid #000; text-shadow: none; }
+body.minimal .notice-card, body.minimal .info-state {
+  color: #111; background: #fff; border: 1px solid #000; border-radius: 5px; box-shadow: none;
+}
+body.minimal #feed li { border-color: #000; }
+body.minimal #feed li:nth-child(even) { background: #f1f1f1; }
+body.minimal .main.info-mode { min-height: 0; }
+body.minimal .main.info-mode .side { display: none; }
+body.minimal .main.info-mode .pane { width: 100%; }
+body.mode-dark.minimal { color: #f2f2f2; background: #202124; }
+body.mode-dark.minimal .menubar { color: #fff; background: #2c2c2c; }
+body.mode-dark.minimal .win, body.mode-dark.minimal .box,
+body.mode-dark.minimal .sheet, body.mode-dark.minimal .dlg { color: #fff; background: #303030; }
+body.mode-dark.minimal .title, body.mode-dark.minimal .tabs { color: #fff; background: #3b3b3b; }
+body.mode-dark.minimal .side { background: #292929; }
+body.mode-dark.minimal .side button { color: #fff; background: #383838; }
+body.mode-dark.minimal .side button.on { background: #505050; color: #fff; }
+body.mode-dark.minimal .pane { color: #fff; background: #303030; }
+body.mode-dark.minimal .lrow, body.mode-dark.minimal .notice-card,
+body.mode-dark.minimal .info-state { color: #fff; background: #3a3a3a; }
+body.mode-dark.minimal .btn, body.mode-dark.minimal input { color: #fff; background: #444; }
+body.mode-dark.minimal .tabs .btn.gr,
+body.mode-dark.minimal .tabs .btn.rd,
+body.mode-dark.minimal .tabs .btn.bl { color: #fff; background: #444; border-color: #000; }
+body.mode-dark.minimal .btn, body.mode-dark.minimal input,
+body.mode-dark.minimal .side button { border-color: #000; }
+body.mode-dark.minimal .btn.gy { border-color: #000; }
+body.mode-dark.minimal .menubar,
+body.mode-dark.minimal .win,
+body.mode-dark.minimal .box,
+body.mode-dark.minimal .sheet,
+body.mode-dark.minimal .dlg,
+body.mode-dark.minimal .title,
+body.mode-dark.minimal .tabs,
+body.mode-dark.minimal .main,
+body.mode-dark.minimal .side,
+body.mode-dark.minimal .pane,
+body.mode-dark.minimal .lrow,
+body.mode-dark.minimal .notice-card,
+body.mode-dark.minimal .info-state,
+body.mode-dark.minimal .st,
+body.mode-dark.minimal .pt,
+body.mode-dark.minimal .tag { border-color: #000; }
+body.mode-dark.minimal .lrow .btn.gr, body.mode-dark.minimal .lrow .btn.rd { color: #111; }
+body.mode-dark.minimal .hint, body.mode-dark.minimal .sub, body.mode-dark.minimal .meta { color: #ccc; }
+@media (max-width: 620px) {
+  body.minimal .menubar { gap: 9px; padding: 0 10px; }
+  body.minimal .win { margin: 12px 8px; }
+  body.minimal .title { height: 58px; padding: 0 12px; }
+  body.minimal .win > .title span { max-width: 40%; }
+  body.minimal .main { min-height: 0; }
+  body.minimal .pane { padding: 16px 13px; }
+  body.minimal .side button { width: auto; }
+  body.minimal .info-intro { display: block; }
+}
 </style>
 </head>
 
@@ -718,7 +925,9 @@ body.mode-dark.theme-golden .lrow .btn.rd {
 <!-- ============ СТРОКА МЕНЮ СВЕРХУ ============ -->
 <!-- Пустые теги <b id="..."> и <span id="..."> заполняет JavaScript (по их id) -->
 <div class="menubar">
-  <b id="apple">&#63743;</b>   <!-- значок яблока: по клику открывается «Об этом Mac» -->
+  <svg class="apple-mark" id="apple-mark" viewBox="0 0 16 18" aria-hidden="true" focusable="false">
+    <path d="M12.9 9.7c0-2.1 1.7-3.1 1.8-3.2-1-1.5-2.7-1.7-3.3-1.7-1.4-.1-2.7.8-3.4.8-.7 0-1.8-.8-3-.8C3.5 4.9 2 5.8 1.2 7.2c-1.7 2.9-.4 7.2 1.2 9.5.8 1.1 1.7 2.3 2.9 2.2 1.2-.1 1.7-.7 3.1-.7s1.8.7 3.1.7c1.3 0 2.1-1.1 2.8-2.2.9-1.3 1.2-2.6 1.2-2.7 0 0-2.5-1-2.5-4.3ZM10.8 3.5c.6-.7 1.1-1.7 1-2.7-.9 0-2 .6-2.7 1.3-.6.7-1.2 1.7-1 2.6 1 0 2-.5 2.7-1.2Z" transform="translate(0 -1) scale(.94)"/>
+  </svg>
   <b id="app"></b>             <!-- название сайта: по клику открывается «О программе» -->
   <span id="mf"></span>        <!-- пункт «Файл» -->
   <span id="contact"></span>  <!-- пункт «Связь»: по клику открывается окно с контактами -->
@@ -764,7 +973,7 @@ body.mode-dark.theme-golden .lrow .btn.rd {
   </div>
 </div>
 
-<!-- ============ ОКНА «ОБ ЭТОМ MAC», «О ПРОГРАММЕ» И «СВЯЗЬ» (по умолчанию скрыто) ============ -->
+<!-- ============ ОКНА «О ПРОГРАММЕ» И «СВЯЗЬ» (по умолчанию скрыто) ============ -->
 <div class="ov" id="dov" style="align-items:center">
   <div class="dlg">
     <div class="title">
@@ -788,7 +997,7 @@ body.mode-dark.theme-golden .lrow .btn.rd {
    3. Маленькие помощники
    4. Рисование: верхняя панель, левое меню, список линий, схема маршрута
    5. Окно выбора из 4 вариантов и сохранение записи
-   6. Окна «Об этом Mac», «О программе» и «Связь»
+   6. Окна «О программе» и «Связь»
    7. Лента сообщений
    8. Связь с сервером (загрузка записей, счётчик онлайн)
    9. Запуск сайта
@@ -821,22 +1030,39 @@ const TEXTS = {
 
   // ---------- РУССКИЙ ----------
   ru: {
-    appName: "Контролёры",
+    appName: "Bahn-Radar",
     fileMenu: "Файл",
     contactMenu: "Связь",
     contactText: "Если у вас есть пожелания, вопросы или вы заметили баги — напишите мне.",
     contactMain: "Telegram для связи:",
     contactBackup: "Запасной Telegram:",
-    windowTitle: "Где контролёр?",
+    windowTitle: "Bahn-Radar",
     tabS: "S-Bahn",
     tabR: "Региональные",
+    tabInfo: "Важная информация",
     allTrains: "Все поезда",
     cities: "Города",
     regions: "Регионы",
     other: "Другое",
     pickLineS: "Выберите линию — ",
     pickLineR: "Региональные поезда: откуда → куда",
-    note: "Показаны основные линии и ключевые станции. Чего нет в списке — вкладка «Другое».",
+    note: "Маршрутные списки дополняются; перед поездкой сверяйте изменения с официальным источником.",
+    infoTitle: "Важная информация",
+    infoIntro: "Официальные сообщения Deutsche Bahn о сбоях, ремонтах и отменах по всей Германии.",
+    infoScope: "Лента охватывает DB Fernverkehr и регионы DB Regio и S-Bahn, доступные в API DB. Перевозчики вне DB могут отсутствовать.",
+    infoLoading: "Загружаю сообщения Deutsche Bahn…",
+    infoNoReports: "Официальный поток не вернул сообщений на выбранный период. Это не подтверждает отсутствие работ или сбоев.",
+    infoNeedsKey: "Для ленты DB нужны выданные DB Client ID и API key, а также одобренный доступ к RIS::Disruptions. Добавьте DB_CLIENT_ID и DB_API_KEY в переменные Vercel; без доступа лента не показывает неподтверждённые данные.",
+    infoLoadError: "Не удалось получить данные из официального API Deutsche Bahn.",
+    infoPeriod: "Период",
+    infoUpdated: "Проверено",
+    infoSnapshot: "Ручной снимок публичной карты DB от",
+    infoSnapshotTail: ". Он не обновляется автоматически; карточки скрываются после окончания указанного срока.",
+    infoSource: "Источник сообщения: Deutsche Bahn · RIS::Disruptions",
+    infoRefresh: "Обновить",
+    infoApiLink: "API Deutsche Bahn и запрос доступа",
+    infoDbLink: "Открыть общегерманскую карту DB Verkehrslage",
+    infoDbSource: "Источник: Deutsche Bahn",
     back: "‹ Назад",
     tapStation: "нажмите на станцию",
     // Четыре варианта выбора (по порядку: 0, 1, 2, 3)
@@ -854,16 +1080,9 @@ const TEXTS = {
     noDb: "Общая база недоступна (нужен вход в Claude): записи видны только вам.",
     dbError: "Ошибка загрузки общей базы.",
     saveError: "Не удалось сохранить: ",
-    // Окно «Об этом Mac»
-    aboutMac: "Об этом Mac",
-    model: "Модель",
-    processor: "Процессор",
-    memory: "Память",
-    serial: "Серийный номер",
-    software: "Система",
     // Окно «О программе»
     aboutApp: "О программе",
-    version: "Версия 0.1.1 beta",
+    version: "beta 1.1",
     disclaimer: "Автор сайта не может гарантировать правдивость того, что отметили пользователи. Записи анонимны и могут быть неточными или устаревшими.",
     ok: "OK",
     // Как показывать время: «5 мин назад» и «ещё 2 ч 55 мин»
@@ -880,28 +1099,46 @@ const TEXTS = {
     locale: "ru-RU",
     themeGolden: "Golden Gate",
     themeDefault: "Leopard",
+    themeMinimal: "Минимализм",
     modeLight: "Светлая",
     modeDark: "Тёмная"
   },
 
   // ---------- ENGLISH ----------
   en: {
-    appName: "Inspectors",
+    appName: "Bahn-Radar",
     fileMenu: "File",
     contactMenu: "Contact",
     contactText: "If you have suggestions or questions, or you noticed a bug, write to me.",
     contactMain: "Telegram:",
     contactBackup: "Backup Telegram:",
-    windowTitle: "Where is the inspector?",
+    windowTitle: "Bahn-Radar",
     tabS: "S-Bahn",
     tabR: "Regional",
+    tabInfo: "Important info",
     allTrains: "All trains",
     cities: "Cities",
     regions: "Regions",
     other: "Other",
     pickLineS: "Choose a line — ",
     pickLineR: "Regional trains: from → to",
-    note: "Main lines and key stations are shown. Anything missing: use the “Other” tab.",
+    note: "Route lists are being expanded; check the official source before travelling.",
+    infoTitle: "Important info",
+    infoIntro: "Official Deutsche Bahn notices about disruption, works and cancellations across Germany.",
+    infoScope: "The feed covers DB Fernverkehr and the DB Regio and S-Bahn areas available through DB's API. Non-DB operators may be missing.",
+    infoLoading: "Loading Deutsche Bahn notices…",
+    infoNoReports: "The official feed returned no notices for this period. This does not confirm that no works or disruptions exist.",
+    infoNeedsKey: "The DB feed requires a DB-issued Client ID and API key, plus approved access to RIS::Disruptions. Add DB_CLIENT_ID and DB_API_KEY to your Vercel environment variables; without access this tab will not show unverified data.",
+    infoLoadError: "Could not retrieve data from the official Deutsche Bahn API.",
+    infoPeriod: "Period",
+    infoUpdated: "Checked",
+    infoSnapshot: "Manual snapshot of the public DB map dated",
+    infoSnapshotTail: ". It does not refresh automatically; notices are hidden after their listed end time.",
+    infoSource: "Notice source: Deutsche Bahn · RIS::Disruptions",
+    infoRefresh: "Refresh",
+    infoApiLink: "Deutsche Bahn API and access request",
+    infoDbLink: "Open the nationwide DB Verkehrslage map",
+    infoDbSource: "Source: Deutsche Bahn",
     back: "‹ Back",
     tapStation: "tap a station",
     options: ["Inspector present", "No inspector", "Was there when I got on", "Was there when I got off"],
@@ -918,14 +1155,8 @@ const TEXTS = {
     noDb: "Shared database unavailable (Claude sign-in needed): reports are visible only to you.",
     dbError: "Could not load the shared database.",
     saveError: "Could not save: ",
-    aboutMac: "About This Mac",
-    model: "Model",
-    processor: "Processor",
-    memory: "Memory",
-    serial: "Serial Number",
-    software: "Software",
-    aboutApp: "About Inspectors",
-    version: "Version 0.1.1 beta",
+    aboutApp: "About Bahn-Radar",
+    version: "beta 1.1",
     disclaimer: "The author of this site cannot guarantee that what users report is true. Reports are anonymous and may be inaccurate or outdated.",
     ok: "OK",
     ago: function (m) {
@@ -941,28 +1172,46 @@ const TEXTS = {
     locale: "en-GB",
     themeGolden: "Golden Gate",
     themeDefault: "Leopard",
+    themeMinimal: "Minimal",
     modeLight: "Light",
     modeDark: "Dark"
   },
 
   // ---------- DEUTSCH ----------
   de: {
-    appName: "Kontrolleure",
+    appName: "Bahn-Radar",
     fileMenu: "Ablage",
     contactMenu: "Kontakt",
     contactText: "Wenn du Wünsche oder Fragen hast oder Fehler bemerkt hast, schreib mir.",
     contactMain: "Telegram:",
     contactBackup: "Zweit-Telegram:",
-    windowTitle: "Wo ist der Kontrolleur?",
+    windowTitle: "Bahn-Radar",
     tabS: "S-Bahn",
     tabR: "Regional",
+    tabInfo: "Wichtige Infos",
     allTrains: "Alle Züge",
     cities: "Städte",
     regions: "Regionen",
     other: "Andere",
     pickLineS: "Linie wählen — ",
     pickLineR: "Regionalzüge: von → nach",
-    note: "Gezeigt werden Hauptlinien und wichtige Stationen. Fehlt etwas: Reiter „Andere“.",
+    note: "Die Streckenlisten werden ergänzt; vor der Fahrt bitte die offizielle Quelle prüfen.",
+    infoTitle: "Wichtige Informationen",
+    infoIntro: "Offizielle Meldungen der Deutschen Bahn zu Störungen, Bauarbeiten und Ausfällen in ganz Deutschland.",
+    infoScope: "Der Feed umfasst DB Fernverkehr sowie die über die DB-API verfügbaren DB-Regio- und S-Bahn-Bereiche. Nicht-DB-Betreiber können fehlen.",
+    infoLoading: "Deutsche-Bahn-Meldungen werden geladen…",
+    infoNoReports: "Der offizielle Feed lieferte für diesen Zeitraum keine Meldungen. Das bestätigt nicht, dass es keine Bauarbeiten oder Störungen gibt.",
+    infoNeedsKey: "Der DB-Feed benötigt eine von der DB ausgestellte Client ID und einen API-Key sowie eine genehmigte Freischaltung für RIS::Disruptions. DB_CLIENT_ID und DB_API_KEY in den Vercel-Umgebungsvariablen hinterlegen; ohne Zugang zeigt diese Ansicht keine unbestätigten Daten.",
+    infoLoadError: "Daten konnten nicht aus der offiziellen API der Deutschen Bahn geladen werden.",
+    infoPeriod: "Zeitraum",
+    infoUpdated: "Geprüft",
+    infoSnapshot: "Manuelle Momentaufnahme der öffentlichen DB-Verkehrslage vom",
+    infoSnapshotTail: ". Sie wird nicht automatisch aktualisiert; Meldungen verschwinden nach Ablauf des angegebenen Zeitraums.",
+    infoSource: "Quelle der Meldung: Deutsche Bahn · RIS::Disruptions",
+    infoRefresh: "Aktualisieren",
+    infoApiLink: "Deutsche-Bahn-API und Zugang beantragen",
+    infoDbLink: "Deutschlandweite DB-Verkehrslagekarte öffnen",
+    infoDbSource: "Quelle: Deutsche Bahn",
     back: "‹ Zurück",
     tapStation: "Station antippen",
     options: ["Kontrolleur da", "Kein Kontrolleur", "War da, als ich einstieg", "War da, als ich ausstieg"],
@@ -979,14 +1228,8 @@ const TEXTS = {
     noDb: "Gemeinsame Datenbank nicht verfügbar (Claude-Login nötig): Meldungen sind nur für dich sichtbar.",
     dbError: "Datenbank konnte nicht geladen werden.",
     saveError: "Speichern fehlgeschlagen: ",
-    aboutMac: "Über diesen Mac",
-    model: "Modell",
-    processor: "Prozessor",
-    memory: "Speicher",
-    serial: "Seriennummer",
-    software: "Software",
-    aboutApp: "Über Kontrolleure",
-    version: "Version 0.1.1 Beta",
+    aboutApp: "Über Bahn-Radar",
+    version: "beta 1.1",
     disclaimer: "Der Autor dieser Seite kann nicht garantieren, dass die Angaben der Nutzer wahr sind. Meldungen sind anonym und können ungenau oder veraltet sein.",
     ok: "OK",
     ago: function (m) {
@@ -1002,6 +1245,7 @@ const TEXTS = {
     locale: "de-DE",
     themeGolden: "Golden Gate",
     themeDefault: "Leopard",
+    themeMinimal: "Minimal",
     modeLight: "Hell",
     modeDark: "Dunkel"
   }
@@ -1061,11 +1305,16 @@ try {
 } catch (e) {}
 
 // Тема сайта сохраняется отдельно от языка.
-let currentTheme = "default";
+let currentTheme = "minimal";
 try {
-  currentTheme = localStorage.getItem("siteTheme") === "golden" ? "golden" : "default";
+  // Новая версия начинает с минимального стиля, не наследуя старый выбор Leopard/Golden Gate.
+  const savedTheme = localStorage.getItem("siteThemeV2");
+  if (savedTheme === "golden") currentTheme = "golden";
+  else if (savedTheme === "leopard") currentTheme = "leopard";
 } catch (e) {}
 document.body.classList.toggle("theme-golden", currentTheme === "golden");
+document.body.classList.toggle("theme-leopard", currentTheme === "leopard");
+document.body.classList.toggle("minimal", currentTheme === "minimal");
 let currentMode = "light";
 try {
   currentMode = localStorage.getItem("siteMode") === "dark" ? "dark" : "light";
@@ -1073,7 +1322,7 @@ try {
 document.body.classList.toggle("mode-dark", currentMode === "dark");
 
 // Текущее состояние: что сейчас выбрано на экране
-let currentTab = "S";     // "S" = вкладка S-Bahn, "R" = вкладка «Региональные»
+let currentTab = "S";     // "S" = S-Bahn, "R" = «Региональные», "I" = важная информация
 let currentArea = "Berlin"; // выбранный город/регион ("ALL" = все поезда, "OTHER" = вкладка «Другое»)
 let currentLine = null;   // выбранная линия (например "S1") или null, если ещё не выбрана
 let picked = null;        // что человек нажал: { line: "...", station: "..." }
@@ -1081,6 +1330,7 @@ let reports = [];         // все записи, которые сейчас в
 let claudeDb = null;      // общая база Claude (нужна только при запуске внутри Claude)
 let useServer = false;    // true, когда сайт работает на Vercel и общается с нашим сервером
 let onlineCount = null;   // сколько человек сейчас на сайте
+let disruptionState = { loading: true, configured: null, items: [], updatedAt: null, sourceMode: null, snapshotAt: null, error: null };
 
 // Короткие помощники
 function tx() { return TEXTS[currentLang]; }                       // тексты текущего языка
@@ -1096,12 +1346,16 @@ function currentData() { return currentTab === "S" ? S : R; }      // данны
 function drawTopBars() {
   const x = tx();
   const themeButton = byId("theme-toggle");
-  themeButton.textContent = currentTheme === "golden" ? x.themeDefault : x.themeGolden;
-  themeButton.setAttribute("aria-label", currentTheme === "golden" ? x.themeDefault : x.themeGolden);
+  const nextTheme = currentTheme === "minimal" ? "leopard" : currentTheme === "leopard" ? "golden" : "minimal";
+  const nextThemeLabel = nextTheme === "golden" ? x.themeGolden : nextTheme === "leopard" ? x.themeDefault : x.themeMinimal;
+  themeButton.textContent = nextThemeLabel;
+  themeButton.setAttribute("aria-label", nextThemeLabel);
   themeButton.onclick = function () {
-    currentTheme = currentTheme === "golden" ? "default" : "golden";
+    currentTheme = nextTheme;
     document.body.classList.toggle("theme-golden", currentTheme === "golden");
-    try { localStorage.setItem("siteTheme", currentTheme); } catch (e) {}
+    document.body.classList.toggle("theme-leopard", currentTheme === "leopard");
+    document.body.classList.toggle("minimal", currentTheme === "minimal");
+    try { localStorage.setItem("siteThemeV2", currentTheme); } catch (e) {}
     drawTopBars();
   };
   const modeButton = byId("mode-toggle");
@@ -1132,7 +1386,7 @@ function drawTopBars() {
     }));
   }
 
-  // Две вкладки: S-Bahn (зелёная) и Региональные (красная)
+  // Навигация по S-Bahn, региональным линиям и важной информации
   const tabsBox = byId("tabs");
   tabsBox.innerHTML = "";
   const sTab = makeButton(x.tabS, currentTab === "S" ? "gr" : "gy", function () {
@@ -1143,7 +1397,12 @@ function drawTopBars() {
       currentTab = "R"; currentArea = "ALL"; currentLine = null; redrawAll();
     });
   rTab.classList.add("tab-r");
-  tabsBox.append(sTab, rTab);
+  const infoTab = makeButton(x.tabInfo, currentTab === "I" ? "bl" : "gy", function () {
+      currentTab = "I"; currentArea = "INFO"; currentLine = null; redrawAll();
+      if (!disruptionState.updatedAt || Date.now() - disruptionState.updatedAt > 60000) loadDisruptions();
+    });
+  infoTab.classList.add("tab-info");
+  tabsBox.append(sTab, rTab, infoTab);
 
   // Подписи на четырёх кнопках выбора и на кнопке «Отмена»
   document.querySelectorAll("[data-o]").forEach(function (button) {
@@ -1160,6 +1419,7 @@ function drawTopBars() {
 function drawSidebar() {
   const box = byId("side");
   box.innerHTML = "";
+  if (currentTab === "I") return;
   box.append(makeEl("h4", 0, currentTab === "S" ? tx().cities : tx().regions));
 
   // На вкладке «Региональные» первым пунктом идёт «Все поезда», в конце всегда «Другое»
@@ -1197,6 +1457,12 @@ function drawPane() {
   const pane = byId("pane");
   const x = tx();
   pane.innerHTML = "";
+  pane.closest(".main").classList.toggle("info-mode", currentTab === "I");
+
+  if (currentTab === "I") {
+    drawImportantInfo(pane, x);
+    return;
+  }
 
   // --- а) вкладка «Другое»: человек сам вписывает линию и станцию ---
   if (currentArea === "OTHER") {
@@ -1274,6 +1540,118 @@ function drawPane() {
   pane.append(route);
 }
 
+function makeExternalLink(label, href, className) {
+  const a = makeEl("a", className || "notice-source", label);
+  a.href = href;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  return a;
+}
+
+function formatNoticeDate(date, time) {
+  if (!date) return "";
+  const parsed = new Date(String(date).includes("T") ? date : date + "T" + (time || "00:00:00"));
+  if (Number.isNaN(parsed.getTime())) return date;
+  return parsed.toLocaleString(tx().locale, { dateStyle: "medium", timeStyle: "short" });
+}
+
+function noticeExpiry(item) {
+  if (!item || !item.end) return null;
+  const end = String(item.end);
+  const parsed = /^\d{4}-\d{2}-\d{2}$/.test(end)
+    ? new Date(end + "T23:59:59.999").getTime()
+    : Date.parse(end);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function noticeExpired(item) {
+  const expiresAt = noticeExpiry(item);
+  return expiresAt !== null && expiresAt <= Date.now();
+}
+
+let noticeExpiryTimer = null;
+function scheduleNoticeExpiryRedraw() {
+  if (noticeExpiryTimer) clearTimeout(noticeExpiryTimer);
+  const now = Date.now();
+  const nextExpiry = disruptionState.items
+    .map(noticeExpiry)
+    .filter((time) => time !== null && time > now)
+    .sort((a, b) => a - b)[0];
+  if (!nextExpiry) return;
+  noticeExpiryTimer = setTimeout(function () {
+    if (currentTab === "I") drawPane();
+    scheduleNoticeExpiryRedraw();
+  }, Math.max(50, nextExpiry - now + 50));
+}
+
+function drawImportantInfo(pane, x) {
+  pane.append(makeEl("h3", 0, x.infoTitle));
+  const intro = makeEl("div", "info-intro");
+  intro.append(makeEl("p", "hint", x.infoIntro));
+  if (disruptionState.sourceMode === "snapshot" && disruptionState.snapshotAt) {
+    const snapshotDate = new Date(disruptionState.snapshotAt + "T12:00:00").toLocaleDateString(x.locale, { dateStyle: "medium" });
+    intro.append(makeEl("span", "hint", x.infoSnapshot + " " + snapshotDate + x.infoSnapshotTail));
+  } else if (disruptionState.updatedAt) {
+    intro.append(makeEl("span", "hint", x.infoUpdated + ": " + new Date(disruptionState.updatedAt).toLocaleTimeString(x.locale, { hour: "2-digit", minute: "2-digit" })));
+  }
+  pane.append(intro, makeEl("p", "hint", x.infoScope));
+
+  const actions = makeEl("div", "info-actions");
+  actions.append(
+    makeButton(x.infoRefresh, "gy", loadDisruptions),
+    makeExternalLink(x.infoApiLink, "https://developers.deutschebahn.com/db-api-marketplace/apis/product/ris-disruptions-transporteure", "notice-source"),
+    makeExternalLink(x.infoDbLink, "https://verkehrslage.db.info/de?f=1%21%21", "notice-source")
+  );
+  pane.append(actions);
+
+  if (disruptionState.loading) {
+    pane.append(makeEl("div", "info-state hint", x.infoLoading));
+    return;
+  }
+  if (disruptionState.configured === false) {
+    const state = makeEl("div", "info-state");
+    state.append(makeEl("p", 0, x.infoNeedsKey));
+    state.append(makeExternalLink(x.infoDbSource, "https://verkehrslage.db.info/de?f=1%21%21", "notice-source"));
+    pane.append(state);
+    return;
+  }
+  if (disruptionState.error) {
+    const state = makeEl("div", "info-state");
+    state.append(makeEl("p", 0, x.infoLoadError));
+    state.append(makeEl("p", "hint", disruptionState.error));
+    state.append(makeExternalLink(x.infoSource, "https://www.bahn.de/service/fahrplaene/", "notice-source"));
+    pane.append(state);
+    return;
+  }
+  const activeItems = disruptionState.items.filter((item) => !noticeExpired(item));
+  if (!activeItems.length) {
+    const state = makeEl("div", "info-state");
+    state.append(makeEl("p", 0, x.infoNoReports));
+    state.append(makeExternalLink(x.infoSource, "https://www.bahn.de/service/fahrplaene/", "notice-source"));
+    pane.append(state);
+    return;
+  }
+
+  const list = makeEl("div", "notice-list");
+  for (const item of activeItems) {
+    const card = makeEl("article", "notice-card");
+    const title = makeEl("h4");
+    const lines = item.lines || [];
+    for (const line of lines) title.append(makeEl("span", "notice-line", line));
+    if (item.headline) title.append(document.createTextNode(item.headline));
+    card.append(title);
+    if (item.text) card.append(makeEl("p", 0, item.text));
+    if (item.start || item.end) {
+      const period = [formatNoticeDate(item.start, item.startTime), formatNoticeDate(item.end, item.endTime)].filter(Boolean).join(" — ");
+      if (period) card.append(makeEl("p", "hint", x.infoPeriod + ": " + period));
+    }
+    if (item.company) card.append(makeEl("p", "hint", item.company));
+    card.append(makeExternalLink(x.infoSource, item.sourceUrl || "https://www.bahn.de/service/fahrplaene/", "notice-source"));
+    list.append(card);
+  }
+  pane.append(list);
+}
+
 
 /* ------------------------------------------------------------------
    5. ОКНО С 4 ВАРИАНТАМИ И СОХРАНЕНИЕ ЗАПИСИ
@@ -1334,7 +1712,7 @@ document.querySelectorAll("[data-o]").forEach(function (button) {
 
 
 /* ------------------------------------------------------------------
-   6. ОКНА «ОБ ЭТОМ MAC», «О ПРОГРАММЕ» И «СВЯЗЬ»
+   6. ОКНА «О ПРОГРАММЕ» И «СВЯЗЬ»
    ------------------------------------------------------------------ */
 
 // Ссылка на Telegram: показывает @имя и открывает t.me/имя в новой вкладке
@@ -1348,7 +1726,6 @@ function telegramLink(name) {
 
 function closeAbout() { byId("dov").classList.remove("on"); }
 
-// kind = "mac"  → окно «Об этом Mac» (iMac G3 с серийным номером)
 // kind = "app"  → окно «О программе» (версия и предупреждение)
 // kind = "contact" → окно «Связь» (контакты в Telegram)
 function showAbout(kind) {
@@ -1356,28 +1733,7 @@ function showAbout(kind) {
   const content = byId("dc");
   content.innerHTML = "";
 
-  if (kind === "mac") {
-    byId("dt").textContent = x.aboutMac;
-    const picture = makeEl("div", "imac");
-    picture.append(makeEl("i"));
-    content.append(picture, makeEl("h2", 0, "iMac G3"));
-
-    // Таблица характеристик (серийный номер выдуманный)
-    const table = makeEl("table");
-    const rows = [
-      [x.model,     "iMac G3 (Bondi Blue)"],
-      [x.processor, "PowerPC G3, 233 MHz"],
-      [x.memory,    "64 MB SDRAM"],
-      [x.serial,    "XA8352Z1JEA"],
-      [x.software,  "Mac OS X 10.5 Leopard"]
-    ];
-    for (const [name, value] of rows) {
-      const tr = makeEl("tr");
-      tr.append(makeEl("td", 0, name), makeEl("td", 0, value));
-      table.append(tr);
-    }
-    content.append(table);
-  } else if (kind === "contact") {
+  if (kind === "contact") {
     byId("dt").textContent = x.contactMenu;
     content.append(makeEl("h2", 0, x.contactMenu), makeEl("p", 0, x.contactText));
     const mainLine = makeEl("p");
@@ -1394,7 +1750,6 @@ function showAbout(kind) {
   byId("dov").classList.add("on");
 }
 
-byId("apple").onclick = function () { showAbout("mac"); };   // клик на яблоко
 byId("app").onclick   = function () { showAbout("app"); };   // клик на название сайта
 byId("contact").onclick = function () { showAbout("contact"); }; // клик на «Связь»
 byId("dx").onclick    = closeAbout;                           // красный кружок закрывает окно
@@ -1480,6 +1835,34 @@ async function loadReports() {
   }
 }
 
+async function loadDisruptions() {
+  disruptionState.loading = true;
+  disruptionState.error = null;
+  if (currentTab === "I") drawPane();
+  try {
+    const response = await fetch("/api/disruptions", { cache: "no-store" });
+    const payload = await response.json();
+    if (!response.ok) throw new Error((payload && payload.error) || response.statusText || "HTTP " + response.status);
+    disruptionState = {
+      loading: false,
+      configured: payload.configured === false ? false : true,
+      items: Array.isArray(payload.items) ? payload.items : [],
+      updatedAt: payload.updatedAt ? Date.parse(payload.updatedAt) : null,
+      sourceMode: payload.sourceMode || "live",
+      snapshotAt: payload.snapshotAt || null,
+      error: null
+    };
+  } catch (error) {
+    disruptionState = {
+      loading: false, configured: null, items: [], updatedAt: Date.now(),
+      sourceMode: null, snapshotAt: null,
+      error: String((error && error.message) || error).slice(0, 180)
+    };
+  }
+  scheduleNoticeExpiryRedraw();
+  if (currentTab === "I") drawPane();
+}
+
 // Сообщить серверу «я на сайте» и получить, сколько людей онлайн
 async function pingOnline() {
   try {
@@ -1507,6 +1890,8 @@ function redrawAll() {
 
 // Выбираем, откуда брать записи
 async function start() {
+  loadDisruptions();
+  setInterval(loadDisruptions, 120000);
   // Пробуем подключиться к базе Claude. На Vercel её нет, поэтому будет ошибка, и это нормально.
   let db = null;
   try { db = await claude.use("db"); } catch (e) {}

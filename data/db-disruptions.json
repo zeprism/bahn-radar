@@ -1,0 +1,109 @@
+{
+  "snapshotAt": "2026-11-27",
+  "items": [
+    {
+      "id": "db-map-berlin-junction-20261127",
+      "lines": ["ICE", "IC", "ECE"],
+      "headline": "Узел Берлин: объезды",
+      "text": "Плановые работы влияют на маршруты дальнего следования. Подробности и полный список затронутых линий — на карте Deutsche Bahn.",
+      "end": "2026-12-12T23:59:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-lehrte-berlin-20261127",
+      "lines": ["ICE", "IC"],
+      "headline": "Коридор Lehrte—Berlin: объезды и отмена остановок",
+      "text": "Подробности и полный список затронутых линий — на карте Deutsche Bahn.",
+      "end": "2026-12-12T23:59:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-rostock-berlin-20261127",
+      "lines": ["IC"],
+      "headline": "Rostock—Berlin: объезды, пропуск остановок и увеличение времени в пути",
+      "text": "Подробности — на карте Deutsche Bahn.",
+      "end": "2026-12-12T23:59:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-aschaffenburg-wuerzburg-20261127",
+      "lines": ["ICE", "IC", "EC", "RJX", "RJ", "ECE", "TGV"],
+      "headline": "Aschaffenburg—Würzburg: объезды, увеличение времени в пути и частичные отмены",
+      "text": "Подробности и полный список затронутых поездов — на карте Deutsche Bahn.",
+      "end": "2026-12-12T23:59:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-cologne-wiesbaden-20261127",
+      "lines": ["ICE", "IC", "RJ"],
+      "headline": "Коридор Köln—Wiesbaden: изменения остановок и отмены поездов",
+      "text": "Подробности и полный список затронутых поездов — на карте Deutsche Bahn.",
+      "end": "2026-12-12T23:59:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-rb32-20261127",
+      "lines": ["RB 32"],
+      "headline": "Отмены поездов между Oranienburg, Berlin-Lichtenberg и аэропортом BER",
+      "text": "Подробности — на карте Deutsche Bahn.",
+      "end": "2026-12-12T23:59:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-rb14-re4-20261127",
+      "lines": ["RB 14", "RE 4"],
+      "headline": "Отмены поездов между Berlin-Spandau, Berlin Hbf и Nauen",
+      "text": "Действует до указанного срока; подробности — на карте Deutsche Bahn.",
+      "end": "2026-11-28T00:15:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-re20-uelzen-stendal-20261127",
+      "lines": ["RE 20"],
+      "headline": "Uelzen—Stendal: изменения движения",
+      "text": "Подробности — на карте Deutsche Bahn.",
+      "end": "2026-12-12T23:30:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-magdeburg-hasselbachplatz-20261127",
+      "lines": ["RE 20", "RE 30", "S 1"],
+      "headline": "Magdeburg Hasselbachplatz: поезда не останавливаются",
+      "text": "Подробности — на карте Deutsche Bahn.",
+      "end": "2026-12-14T00:00:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-leipzig-falkenberg-20261127",
+      "lines": ["RE 10", "S 4"],
+      "headline": "Leipzig-Engelsdorf—Falkenberg: заменяющие автобусы",
+      "text": "Подробности — на карте Deutsche Bahn.",
+      "end": "2026-11-28T23:00:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-map-nordhausen-erfurt-20261127",
+      "lines": ["RE 55", "RE 56"],
+      "headline": "Nordhausen—Erfurt: заменяющие автобусы",
+      "text": "Подробности — на карте Deutsche Bahn.",
+      "end": "2026-11-28T23:30:00+01:00",
+      "sourceUrl": "https://verkehrslage.db.info/de?f=1%21%21"
+    },
+    {
+      "id": "db-regio-bayern-rb73-20261127",
+      "lines": ["RB 73"],
+      "headline": "Kempten—Pfronten-Steinach: закрытие участка и автобусная замена",
+      "text": "DB Regio сообщает о ремонтных работах и замене поездов автобусами. По прогнозу DB, ограничение продлится до 4 декабря 2026 года.",
+      "end": "2026-12-04T23:59:00+01:00",
+      "sourceUrl": "https://regional.bahn.de/regionen/bayern/fahrplan/aktuelle_betriebslage"
+    },
+    {
+      "id": "db-regio-bayern-rb82-20261127",
+      "lines": ["RB 82"],
+      "headline": "Steinach—Rothenburg ob der Tauber: закрытие участка и автобусная замена",
+      "text": "DB Regio сообщает о ремонте и автобусной замене. Плановый период работ заканчивается 30 ноября 2026 года.",
+      "end": "2026-11-30T23:59:00+01:00",
+      "sourceUrl": "https://regional.bahn.de/regionen/bayern/fahrplan/aktuelle_betriebslage"
+    }
+  ]
+}
